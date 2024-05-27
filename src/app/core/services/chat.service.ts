@@ -1,10 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, filter, first, map } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { filter, first, map } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 import { Group } from '../data/Group';
 import { History } from '../data/History';
-import { Store } from '@ngrx/store';
-import { userFeature } from '../store/user/user.reducer';
+import { HistoryApiActions } from '../store/history/history-api.actions';
+import { hisotryFeature } from '../store/history/history.reducer';
+import { StatusApiActions } from '../store/status/status-api.actions';
+import { statusFeature } from '../store/status/status.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -15,22 +18,17 @@ export class ChatService {
 
   store = inject(Store);
 
-  groups = new BehaviorSubject<Group[]>([]);
   groupSockets = new Map<string, Socket>();
 
-  currentGroup$ = new BehaviorSubject<Group | null>(null);
-
-  currentGroupId!: string;
   currentRoomId!: string;
-
-  history$ = new BehaviorSubject<History[]>([]);
 
   constructor() {
     this.connect();
     this.socket.on('groupsList', ({ groups }: { groups: Group[] }) => {
-      this.currentGroup$.next(groups[0]);
-      this.currentGroupId = groups[0]._id;
-      this.groups.next(groups);
+      this.store.dispatch(StatusApiActions.groupsLoadedSuccess({ groups }));
+      this.store.dispatch(
+        StatusApiActions.groupLoadedSuccess({ group: groups[0] })
+      );
 
       groups.forEach((group) => {
         if (!this.groupSockets.has(group._id)) {
@@ -40,19 +38,28 @@ export class ChatService {
           });
           this.groupSockets.get(group._id)?.on('history', (res: History[]) => {
             console.log('history: ' + res);
-            this.history$.next(res);
+            this.store.dispatch(
+              HistoryApiActions.historyLoadedSuccess({ histories: res })
+            );
           });
           this.groupSockets
             .get(group._id)
             ?.on('broadcastMessage', (res: History) => {
               console.log('history: ' + res);
               let currentHistory: History[] = [];
-              this.history$.pipe(first()).subscribe((history) => {
-                const updatedHistory = [...history, res];
-                currentHistory = [...history];
-              });
+              this.store
+                .select(hisotryFeature.selectAll)
+                .pipe(first())
+                .subscribe((history) => {
+                  const updatedHistory = [...history, res];
+                  currentHistory = [...history];
+                });
               currentHistory.push(res);
-              this.history$.next(currentHistory);
+              this.store.dispatch(
+                HistoryApiActions.historyLoadedSuccess({
+                  histories: currentHistory,
+                })
+              );
             });
         }
       });
@@ -64,7 +71,7 @@ export class ChatService {
   }
 
   getChatrooms(groupName: string) {
-    return this.groups.pipe(
+    return this.store.select(statusFeature.selectGroups).pipe(
       filter((groups) => groups.length != 0),
       map((groups) => {
         return groups.filter((group) => group.name == groupName)[0].rooms;
@@ -73,13 +80,13 @@ export class ChatService {
   }
 
   openGroup(groupId: string) {
-    this.groups
+    this.store
+      .select(statusFeature.selectGroups)
       .pipe(
         first(),
         map((groups) => {
           const group = groups.filter((group) => group._id == groupId)[0];
-          this.currentGroup$.next(group);
-          this.currentGroupId = group._id;
+          this.store.dispatch(StatusApiActions.groupLoadedSuccess({ group }));
         })
       )
       .subscribe();
@@ -93,15 +100,20 @@ export class ChatService {
 
   send(message: string) {
     this.store
-      .select(userFeature.selectLoggedInUser)
+      .select(statusFeature.selectLoggedInUser)
       .pipe(first())
       .subscribe((user) => {
-        this.groupSockets.get(this.currentGroupId)?.emit('newMessage', {
-          message: message,
-          username: user?.username,
-          roomId: this.currentRoomId,
-          time: new Date(Date.now()),
-        });
+        this.store
+          .select(statusFeature.selectActivatedGroup)
+          .pipe(first())
+          .subscribe((group) => {
+            this.groupSockets.get(group!._id.toString())?.emit('newMessage', {
+              message: message,
+              username: user?.username,
+              roomId: this.currentRoomId,
+              time: new Date(Date.now()),
+            });
+          });
       });
   }
 }

@@ -1,15 +1,16 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-import { filter, map, switchMap } from 'rxjs';
-import { ChatService } from './core/services/chat.service';
+import { Store } from '@ngrx/store';
+import { filter, map } from 'rxjs';
+import { hisotryFeature } from './core/store/history/history.reducer';
+import { StatusApiActions } from './core/store/status/status-api.actions';
+import { statusFeature } from './core/store/status/status.reducer';
 import { GroupComponent } from './features/group/group.component';
-import { RoomComponent } from './features/room/room.component';
 import { MessageBoxComponent } from './features/message-box/message-box.component';
 import { MessageComponent } from './features/message/message.component';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { UserApiActions } from './core/store/user/user-api.actions';
+import { RoomComponent } from './features/room/room.component';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,6 @@ import { UserApiActions } from './core/store/user/user-api.actions';
 export class AppComponent implements OnInit {
   title = 'chatroom_front';
 
-  chatService = inject(ChatService);
   formBuilder = inject(FormBuilder);
   store = inject(Store);
 
@@ -39,26 +39,22 @@ export class AppComponent implements OnInit {
 
   onSetUsername() {
     this.store.dispatch(
-      UserApiActions.userLoadedSuccess({
+      StatusApiActions.userLoadedSuccess({
         username: this.usernameForm.controls.username.value!,
       })
     );
   }
 
-  groupNames$ = this.chatService.groups.pipe(
-    map((groups) => groups.flatMap((group) => group.name))
-  );
+  groups$ = this.store.select(statusFeature.selectGroups);
 
-  groups$ = this.chatService.groups;
+  activeGroup$ = this.store.select(statusFeature.selectActivatedGroup);
 
-  activeGroup$ = this.chatService.currentGroup$;
+  history$ = this.store.select(hisotryFeature.selectAll);
 
-  history$ = this.chatService.history$;
-
-  rooms$ = this.chatService.currentGroup$.pipe(
+  rooms$ = this.store.select(statusFeature.selectActivatedGroup).pipe(
     filter((group) => group != null),
-    switchMap((group) => {
-      return this.chatService.getChatrooms(group!.name);
+    map((group) => {
+      return group!.rooms;
     })
   );
 

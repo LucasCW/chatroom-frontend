@@ -6,14 +6,16 @@ import { provideEffects } from '@ngrx/effects';
 import { provideState, provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { routes } from './app.routes';
-import { userFeature } from './core/store/user/user.reducer';
+import { statusFeature } from './core/store/status/status.reducer';
+import { hisotryFeature } from './core/store/history/history.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
     provideStore(),
-    provideState(userFeature),
+    provideState(statusFeature),
+    provideState(hisotryFeature),
     provideEffects(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
