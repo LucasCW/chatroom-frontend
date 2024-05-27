@@ -1,1 +1,25 @@
-<p>this works</p>
+<div class="row">
+  <div class="col-2 bg-primary">
+    @for (group of groups$ | async; track $index) {
+    <app-group [groupName]="group.name" [groupId]="group._id"></app-group>
+    }
+  </div>
+  <div class="col-2 bg-secondary vh-100">
+    @for (room of rooms$ | async; track $index) {
+    <app-room
+      [roomName]="room.name"
+      [groupId]="(activeGroup$ | async)!._id"
+      [roomId]="room._id"
+    ></app-room>
+    }
+  </div>
+  <div class="col-8">
+    <app-message-box></app-message-box>
+    @for (history of history$ | async; track $index) {
+    <app-message
+      [username]="history.username"
+      [message]="history.message"
+    ></app-message>
+    }
+  </div>
+</div>
