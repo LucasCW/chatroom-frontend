@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter, first, map } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 import { Group } from '../data/Group';
-import { History } from '../data/history';
+import { History } from '../data/History';
 
 @Injectable({
   providedIn: 'root',
