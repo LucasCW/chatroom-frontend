@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, filter, first, map } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 import { Group } from '../data/Group';
 import { History } from '../data/History';
+import { Store } from '@ngrx/store';
+import { userFeature } from '../store/user/user.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +12,9 @@ import { History } from '../data/History';
 export class ChatService {
   url = '192.168.1.33:3000';
   socket!: Socket;
+
+  store = inject(Store);
+
   groups = new BehaviorSubject<Group[]>([]);
   groupSockets = new Map<string, Socket>();
 
@@ -87,11 +92,16 @@ export class ChatService {
   }
 
   send(message: string) {
-    this.groupSockets.get(this.currentGroupId)?.emit('newMessage', {
-      message: message,
-      username: 'Lucas',
-      roomId: this.currentRoomId,
-      time: new Date(Date.now()),
-    });
+    this.store
+      .select(userFeature.selectLoggedInUser)
+      .pipe(first())
+      .subscribe((user) => {
+        this.groupSockets.get(this.currentGroupId)?.emit('newMessage', {
+          message: message,
+          username: user?.username,
+          roomId: this.currentRoomId,
+          time: new Date(Date.now()),
+        });
+      });
   }
 }
