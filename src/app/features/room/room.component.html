@@ -1,7 +1,14 @@
-<a
-  class="list-group-item list-group-item-action"
-  [ngClass]="{ active: isSelected$ | async }"
-  (click)="openRoom()"
->
-  {{ roomName }}
-</a>
+<li class="nav-item">
+  <a
+    href="#"
+    class="nav-link text-white"
+    [ngClass]="{ active: isSelected$ | async }"
+    (click)="openRoom()"
+  >
+    <!-- put an icon here -->
+    <svg class="bi me-2" width="16" height="16">
+      <use xlink:href="#home"></use>
+    </svg>
+    {{ roomName }}
+  </a>
+</li>

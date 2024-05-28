@@ -1,7 +1,14 @@
-<a
-  class="list-group-item list-group-item-action"
-  (click)="onChangeGroup()"
-  [ngClass]="{ active: isSelected$ | async }"
->
-  {{ groupName }}
-</a>
+<li class="nav-item">
+  <a
+    href="#"
+    class="nav-link text-white"
+    [ngClass]="{ active: isSelected$ | async }"
+    (click)="onChangeGroup()"
+  >
+    <!-- put an icon here -->
+    <svg class="bi me-2" width="16" height="16">
+      <use xlink:href="#home"></use>
+    </svg>
+    {{ groupName }}
+  </a>
+</li>
