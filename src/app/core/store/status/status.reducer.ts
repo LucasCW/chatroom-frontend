@@ -11,7 +11,8 @@ export interface State {
 }
 
 const initState: State = {
-  loggedInUser: null,
+  // TODO skipping login process
+  loggedInUser: { username: 'Lucas' },
   joinedRoom: null,
   activatedGroup: null,
   groups: [],

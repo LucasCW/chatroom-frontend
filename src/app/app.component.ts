@@ -12,6 +12,8 @@ import { MessageBoxComponent } from './features/message-box/message-box.componen
 import { MessageComponent } from './features/message/message.component';
 import { RoomComponent } from './features/room/room.component';
 import { HeaderComponent } from './features/header/header.component';
+import { GroupMenuComponent } from './features/group-menu/group-menu.component';
+import { SidebarComponent } from './features/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +29,8 @@ import { HeaderComponent } from './features/header/header.component';
     MessageComponent,
     ReactiveFormsModule,
     HeaderComponent,
+    GroupMenuComponent,
+    SidebarComponent,
   ],
 })
 export class AppComponent implements OnInit {
