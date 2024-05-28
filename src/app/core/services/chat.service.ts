@@ -20,8 +20,6 @@ export class ChatService {
 
   groupSockets = new Map<string, Socket>();
 
-  currentRoomId!: string;
-
   constructor() {
     this.connect();
     this.socket.on('groupsList', ({ groups }: { groups: Group[] }) => {
@@ -33,11 +31,10 @@ export class ChatService {
       groups.forEach((group) => {
         if (!this.groupSockets.has(group._id)) {
           this.groupSockets.set(group._id, io(this.url + '/' + group._id));
-          this.groupSockets.get(group._id)?.on('message', (res) => {
-            console.log('message: ' + res);
-          });
+          //   this.groupSockets.get(group._id)?.on('message', (res) => {
+          //     console.log('message: ' + res);
+          //   });
           this.groupSockets.get(group._id)?.on('history', (res: History[]) => {
-            console.log('history: ' + res);
             this.store.dispatch(
               HistoryApiActions.historyLoadedSuccess({ histories: res })
             );
@@ -45,7 +42,6 @@ export class ChatService {
           this.groupSockets
             .get(group._id)
             ?.on('broadcastMessage', (res: History) => {
-              console.log('history: ' + res);
               let currentHistory: History[] = [];
               this.store
                 .select(hisotryFeature.selectAll)
@@ -92,27 +88,23 @@ export class ChatService {
       .subscribe();
   }
 
-  joinRoom(groupId: string, roomId: string) {
-    console.log('Joining room', roomId);
-    this.groupSockets.get(groupId)?.emit('joinRoom', roomId);
-    this.currentRoomId = roomId;
+  async joinRoom(groupId: string, roomId: string) {
+    await this.groupSockets.get(groupId)?.emitWithAck('joinRoom', roomId);
+    this.store.dispatch(StatusApiActions.roomLoadedSuccess({ roomId: roomId }));
   }
 
   send(message: string) {
     this.store
-      .select(statusFeature.selectLoggedInUser)
+      .select(statusFeature.selectStatusState)
       .pipe(first())
-      .subscribe((user) => {
-        this.store
-          .select(statusFeature.selectActivatedGroup)
-          .pipe(first())
-          .subscribe((group) => {
-            this.groupSockets.get(group!._id.toString())?.emit('newMessage', {
-              message: message,
-              username: user?.username,
-              roomId: this.currentRoomId,
-              time: new Date(Date.now()),
-            });
+      .subscribe((state) => {
+        this.groupSockets
+          .get(state.activatedGroup!._id.toString())
+          ?.emit('newMessage', {
+            message: message,
+            username: state.loggedInUser?.username,
+            roomId: state.joinedRoom,
+            time: new Date(Date.now()),
           });
       });
   }

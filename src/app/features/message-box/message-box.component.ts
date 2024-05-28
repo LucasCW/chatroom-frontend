@@ -19,6 +19,5 @@ export class MessageBoxComponent {
 
   onSubmit() {
     this.chatService.send(this.messageForm.controls.message.value!);
-    console.log('Sending message: ', this.messageForm.value);
   }
 }

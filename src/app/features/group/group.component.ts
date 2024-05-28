@@ -18,7 +18,6 @@ export class GroupComponent {
   groupId!: string;
 
   onChangeGroup() {
-    console.log('clicked', this.groupName, this.groupId);
     this.chatService.openGroup(this.groupId);
   }
 }

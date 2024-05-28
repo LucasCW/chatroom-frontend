@@ -1,12 +1,11 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
+import { Group } from '../../data/Group';
 import { User } from '../../data/User';
 import { StatusApiActions } from './status-api.actions';
-import { Room } from '../../data/Room';
-import { Group } from '../../data/Group';
 
 export interface State {
   loggedInUser: User | null;
-  joinedRoom: Room | null;
+  joinedRoom: string | null;
   activatedGroup: Group | null;
   groups: Group[];
 }
@@ -26,7 +25,7 @@ export const statusFeature = createFeature({
       return { ...state, loggedInUser: { username: action.username } };
     }),
     on(StatusApiActions.roomLoadedSuccess, (state, action) => {
-      return { ...state, joinedRoom: { ...action.room } };
+      return { ...state, joinedRoom: action.roomId };
     }),
     on(StatusApiActions.groupLoadedSuccess, (state, action) => {
       return { ...state, activatedGroup: { ...action.group } };

@@ -1,15 +1,6 @@
 <form [formGroup]="messageForm" (submit)="onSubmit()">
   <div class="input-group mb-3">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Recipient's username"
-      aria-label="Recipient's username"
-      aria-describedby="button-addon2"
-      formControlName="message"
-    />
-    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
-      Send
-    </button>
+    <input type="text" class="form-control" formControlName="message" />
+    <button class="btn btn-outline-secondary" type="submit">Send</button>
   </div>
 </form>
