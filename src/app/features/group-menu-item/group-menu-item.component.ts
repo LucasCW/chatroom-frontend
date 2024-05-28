@@ -41,6 +41,5 @@ export class GroupMenuItemComponent {
 
   openRoom(roomId: string) {
     this.chatService.joinRoom(this.group._id, roomId);
-    debugger;
   }
 }
