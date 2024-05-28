@@ -23,6 +23,9 @@ export class ChatService {
   constructor() {
     this.connect();
     this.socket.on('groupsList', ({ groups }: { groups: Group[] }) => {
+      // temp
+      this.findUser('Lucas');
+
       this.store.dispatch(StatusApiActions.groupsLoadedSuccess({ groups }));
       this.store.dispatch(
         StatusApiActions.groupLoadedSuccess({ group: groups[0] })
@@ -31,9 +34,6 @@ export class ChatService {
       groups.forEach((group) => {
         if (!this.groupSockets.has(group._id)) {
           this.groupSockets.set(group._id, io(this.url + '/' + group._id));
-          //   this.groupSockets.get(group._id)?.on('message', (res) => {
-          //     console.log('message: ' + res);
-          //   });
           this.groupSockets.get(group._id)?.on('history', (res: History[]) => {
             this.store.dispatch(
               HistoryApiActions.historyLoadedSuccess({ histories: res })
@@ -47,7 +47,6 @@ export class ChatService {
                 .select(hisotryFeature.selectAll)
                 .pipe(first())
                 .subscribe((history) => {
-                  const updatedHistory = [...history, res];
                   currentHistory = [...history];
                 });
               currentHistory.push(res);
@@ -59,6 +58,12 @@ export class ChatService {
             });
         }
       });
+    });
+
+    this.socket.on('findUserResponse', (response) => {
+      this.store.dispatch(
+        StatusApiActions.userLoadedSuccess({ user: response.user })
+      );
     });
   }
 
@@ -73,6 +78,10 @@ export class ChatService {
         return groups.filter((group) => group.name == groupName)[0].rooms;
       })
     );
+  }
+
+  findUser(username: string) {
+    this.socket.emit('findUser', { username: username });
   }
 
   openGroup(groupId: string) {
@@ -102,7 +111,7 @@ export class ChatService {
           .get(state.activatedGroup!._id.toString())
           ?.emit('newMessage', {
             message: message,
-            username: state.loggedInUser?.username,
+            user: state.loggedInUser,
             roomId: state.joinedRoom,
             time: new Date(Date.now()),
           });

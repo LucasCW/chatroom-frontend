@@ -22,7 +22,7 @@
         <div class="flex-fill ms-3 mt-3">
           @for (history of history$ | async; track $index) {
           <app-message
-            [username]="history.username"
+            [username]="history.user.username"
             [message]="history.message"
           ></app-message>
           }

@@ -1,9 +1,9 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { ChatService } from './core/services/chat.service';
 import { hisotryFeature } from './core/store/history/history.reducer';
-import { StatusApiActions } from './core/store/status/status-api.actions';
 import { GroupComponent } from './features/group/group.component';
 import { MessageBoxComponent } from './features/message-box/message-box.component';
 import { MessageComponent } from './features/message/message.component';
@@ -23,7 +23,11 @@ import { SidebarComponent } from './features/sidebar/sidebar.component';
     SidebarComponent,
   ],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  chatService = inject(ChatService);
+  ngOnInit(): void {
+    // this.chatService.findUser('Lucas');
+  }
   title = 'chatroom_front';
 
   formBuilder = inject(FormBuilder);
@@ -34,11 +38,11 @@ export class AppComponent {
   });
 
   onSetUsername() {
-    this.store.dispatch(
-      StatusApiActions.userLoadedSuccess({
-        username: this.usernameForm.controls.username.value!,
-      })
-    );
+    // this.store.dispatch(
+    //   StatusApiActions.userLoadedSuccess({
+    //     user: this.usernameForm.controls.username.value!,
+    //   })
+    // );
   }
 
   history$ = this.store.select(hisotryFeature.selectAll);
