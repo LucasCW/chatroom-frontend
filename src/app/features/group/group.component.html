@@ -1,1 +1,7 @@
-<div (dblclick)="onChangeGroup()">{{ groupName }}</div>
+<a
+  class="list-group-item list-group-item-action"
+  (click)="onChangeGroup()"
+  [ngClass]="{ active: isSelected$ | async }"
+>
+  {{ groupName }}
+</a>

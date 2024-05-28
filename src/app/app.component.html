@@ -1,33 +1,47 @@
-<div class="vh-100">
-  <div class="container">
-    <form class="mt-3" [formGroup]="usernameForm" (ngSubmit)="onSetUsername()">
-      <input class="form-control mb-3" formControlName="username" type="text" />
-      <button class="btn-primary btn mb-3" type="submit">Set Username</button>
-    </form>
-  </div>
-  <div class="row">
-    <div class="col-2 bg-primary">
-      @for (group of groups$ | async; track $index) {
-      <app-group [groupName]="group.name" [groupId]="group._id"></app-group>
-      }
+<div class="vh-100 container pb-3">
+  <div class="h-100 d-flex flex-column">
+    <div class="container">
+      <form
+        class="mt-3"
+        [formGroup]="usernameForm"
+        (ngSubmit)="onSetUsername()"
+      >
+        <input
+          class="form-control mb-3"
+          formControlName="username"
+          type="text"
+        />
+        <button class="btn-primary btn mb-3" type="submit">Set Username</button>
+      </form>
     </div>
-    <div class="col-2 bg-secondary">
-      @for (room of rooms$ | async; track $index) {
-      <app-room
-        [roomName]="room.name"
-        [groupId]="(activeGroup$ | async)!._id"
-        [roomId]="room._id"
-      ></app-room>
-      }
-    </div>
-    <div class="col-8">
-      <app-message-box></app-message-box>
-      @for (history of history$ | async; track $index) {
-      <app-message
-        [username]="history.username"
-        [message]="history.message"
-      ></app-message>
-      }
+    <div class="row flex-grow-1">
+      <div class="col-2 px-0 border">
+        <div class="list-group">
+          @for (group of groups$ | async; track group._id) {
+          <app-group [groupName]="group.name" [groupId]="group._id"></app-group>
+          }
+        </div>
+      </div>
+      <div class="col-2 px-0 border">
+        <div class="list-group">
+          @for (room of rooms$ | async; track room._id) {
+          <app-room
+            [roomName]="room.name"
+            [groupId]="(activeGroup$ | async)!._id"
+            [roomId]="room._id"
+          ></app-room>
+          }
+        </div>
+      </div>
+      <div class="col-8">
+        <app-message-box></app-message-box>
+        @for (history of history$ | async; track $index) {
+        <app-message
+          [username]="history.username"
+          [message]="history.message"
+        ></app-message>
+        }
+      </div>
     </div>
   </div>
 </div>

@@ -1,1 +1,7 @@
-<div (dblclick)="openRoom()">{{ roomName }}</div>
+<a
+  class="list-group-item list-group-item-action"
+  [ngClass]="{ active: isSelected$ | async }"
+  (click)="openRoom()"
+>
+  {{ roomName }}
+</a>
