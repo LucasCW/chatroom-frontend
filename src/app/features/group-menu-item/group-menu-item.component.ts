@@ -1,10 +1,9 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
+import { Group } from '../../core/data/Group';
 import { ChatService } from '../../core/services/chat.service';
 import { statusFeature } from '../../core/store/status/status.reducer';
-import { Group } from '../../core/data/Group';
-import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-group-menu-item',
@@ -22,10 +21,8 @@ export class GroupMenuItemComponent {
 
   joinedRoom$ = this.store.select(statusFeature.selectJoinedRoom);
 
-  @Input()
-  roomName!: string;
-
   openRoom(roomId: string) {
+    this.chatService.openGroup(this.group._id);
     this.chatService.joinRoom(this.group._id, roomId);
   }
 }

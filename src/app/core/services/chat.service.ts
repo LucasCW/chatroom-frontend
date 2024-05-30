@@ -98,7 +98,6 @@ export class ChatService {
   }
 
   async joinRoom(groupId: string, roomId: string) {
-    console.log('joining room', roomId);
     await this.groupSockets.get(groupId)?.emitWithAck('joinRoom', roomId);
     this.store.dispatch(StatusApiActions.roomLoadedSuccess({ roomId: roomId }));
   }
