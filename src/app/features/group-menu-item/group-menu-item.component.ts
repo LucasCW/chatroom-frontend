@@ -20,14 +20,6 @@ export class GroupMenuItemComponent {
   @Input()
   group!: Group;
 
-  @Input()
-  groupId!: string;
-
-  onChangeGroup() {
-    console.log('this is executed');
-    this.chatService.openGroup(this.groupId);
-  }
-
   joinedRoom$ = this.store.select(statusFeature.selectJoinedRoom);
 
   @Input()
