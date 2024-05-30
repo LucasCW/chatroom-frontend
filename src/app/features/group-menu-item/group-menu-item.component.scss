@@ -48,6 +48,11 @@
   background-color: #27d59b;
 }
 
+.btn-toggle-nav a.active {
+  background-color: #27d59b;
+  color: RGBA(26, 30, 33, var(--bs-link-opacity, 1));
+}
+
 .scrollarea {
   overflow-y: auto;
 }

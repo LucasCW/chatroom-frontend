@@ -5,7 +5,6 @@
       data-bs-toggle="collapse"
       [attr.data-bs-target]="'#' + group._id"
       aria-expanded="true"
-      (click)="onChangeGroup()"
     >
       {{ group.name }}
     </button>
@@ -16,6 +15,7 @@
           <a
             class="link-dark rounded text-white"
             (click)="openRoom(room._id)"
+            [ngClass]="{ active: (joinedRoom$ | async) == room._id }"
             >{{ room.name }}</a
           >
         </li>
