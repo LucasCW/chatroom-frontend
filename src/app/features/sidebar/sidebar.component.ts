@@ -3,6 +3,7 @@ import { GroupMenuComponent } from '../group-menu/group-menu.component';
 import { Store } from '@ngrx/store';
 import { statusFeature } from '../../core/store/status/status.reducer';
 import { AsyncPipe } from '@angular/common';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,5 +15,7 @@ import { AsyncPipe } from '@angular/common';
 export class SidebarComponent {
   store = inject(Store);
 
-  user$ = this.store.select(statusFeature.selectLoggedInUser);
+  user$ = this.store
+    .select(statusFeature.selectLoggedInUser)
+    .pipe(filter((user) => user != null));
 }
