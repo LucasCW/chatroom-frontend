@@ -1,5 +1,5 @@
 <div class="d-flex flex-column px-0 h-100">
-  @if (room$ | async) {
+  @if (room$ | async) { @if((history$ | async)!.length > 0) {
   <div class="flex-fill ms-3 mt-3">
     @for (history of history$ | async; track $index) {
     <app-message
@@ -8,6 +8,13 @@
     ></app-message>
     }
   </div>
+  } @else {
+  <div
+    class="flex-fill ms-3 mt-3 d-flex justify-content-center align-items-center"
+  >
+    <h4>Start the conversation by sending a message!</h4>
+  </div>
+  }
   <app-message-box></app-message-box>
   } @else {
   <div
