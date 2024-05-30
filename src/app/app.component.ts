@@ -8,6 +8,7 @@ import { GroupComponent } from './features/group/group.component';
 import { MessageBoxComponent } from './features/message-box/message-box.component';
 import { MessageComponent } from './features/message/message.component';
 import { SidebarComponent } from './features/sidebar/sidebar.component';
+import { MessageDisplayComponent } from './features/message-display/message-display.component';
 
 @Component({
   selector: 'app-root',
@@ -21,14 +22,13 @@ import { SidebarComponent } from './features/sidebar/sidebar.component';
     MessageComponent,
     ReactiveFormsModule,
     SidebarComponent,
+    MessageDisplayComponent,
   ],
 })
-export class AppComponent implements OnInit {
-  chatService = inject(ChatService);
-  ngOnInit(): void {
-    // this.chatService.findUser('Lucas');
-  }
+export class AppComponent {
   title = 'chatroom_front';
+
+  chatService = inject(ChatService);
 
   formBuilder = inject(FormBuilder);
   store = inject(Store);
@@ -44,6 +44,4 @@ export class AppComponent implements OnInit {
     //   })
     // );
   }
-
-  history$ = this.store.select(hisotryFeature.selectAll);
 }

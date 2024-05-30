@@ -18,17 +18,11 @@
       <div class="col-2 px-0 border-x">
         <app-sidebar></app-sidebar>
       </div>
-      <div class="col-10 d-flex flex-column px-0">
-        <div class="flex-fill ms-3 mt-3">
-          @for (history of history$ | async; track $index) {
-          <app-message
-            [username]="history.user.username"
-            [message]="history.message"
-          ></app-message>
-          }
-        </div>
-        <app-message-box></app-message-box>
+      <div class="col-10 px-0 flex-fill">
+        <app-message-display></app-message-display>
       </div>
+      <!-- <div class="col-10 d-flex flex-column px-0"> -->
+      <!-- </div> -->
     </div>
   </div>
 </div>

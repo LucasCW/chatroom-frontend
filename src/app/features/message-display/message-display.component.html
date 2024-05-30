@@ -1,1 +1,19 @@
-<p>message-display works!</p>
+<div class="d-flex flex-column px-0 h-100">
+  @if (room$ | async) {
+  <div class="flex-fill ms-3 mt-3">
+    @for (history of history$ | async; track $index) {
+    <app-message
+      [username]="history.user.username"
+      [message]="history.message"
+    ></app-message>
+    }
+  </div>
+  <app-message-box></app-message-box>
+  } @else {
+  <div
+    class="flex-fill bg-secondary d-flex justify-content-center align-items-center"
+  >
+    <h2 class="justify-content">Please select a chatroom</h2>
+  </div>
+  }
+</div>
