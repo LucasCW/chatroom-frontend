@@ -1,3 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/scss/bootstrap";
 @import "material-symbols/index.css";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after,
+.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after {
+  --mat-minimal-pseudo-checkbox-selected-checkmark-color: white;
+}
+html {
+  //   --mat-option-selected-state-label-text-color: white;
+  --mdc-filled-text-field-container-color: bg-dark;
+  //   --mat-select-panel-background-color: white;
+  //   --mdc-filled-text-field-focus-label-text-color: rgba(255, 255, 255, 0.87);
+  //   --mat-select-focused-arrow-color: rgba(255, 255, 255, 0.87);
+
+  --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.87);
+  //   --mat-select-enabled-arrow-color: rgba(255, 255, 255, 0.54);
+  //   --mdc-filled-text-field-active-indicator-color: rgba(255, 255, 255, 0.42);
+
+  //   --mdc-filled-text-field-focus-active-indicator-color: #ffffff;
+
+  //   --mat-select-enabled-trigger-text-color: rgba(255, 255, 255, 0.87);
+}

@@ -8,12 +8,15 @@ import { HistoryApiActions } from '../store/history/history-api.actions';
 import { hisotryFeature } from '../store/history/history.reducer';
 import { StatusApiActions } from '../store/status/status-api.actions';
 import { statusFeature } from '../store/status/status.reducer';
+import { User } from '../data/User';
+import { UserApiActions } from '../store/user/user-api.actions';
+import { userFeature } from '../store/user/user.reducer';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  url = '192.168.1.33:3000';
+  url = 'localhost:3000';
   socket!: Socket;
 
   store = inject(Store);
@@ -22,47 +25,53 @@ export class ChatService {
 
   constructor() {
     this.connect();
-    this.socket.on('groupsList', ({ groups }: { groups: Group[] }) => {
-      // temp
-      this.findUser('Lucas');
+    this.socket.on(
+      'groupsList',
+      ({ groups, users }: { groups: Group[]; users: User[] }) => {
+        // temp
+        this.findUser('Lucas');
 
-      this.store.dispatch(StatusApiActions.groupsLoadedSuccess({ groups }));
-      this.store.dispatch(
-        StatusApiActions.groupLoadedSuccess({ group: groups[0] })
-      );
+        this.store.dispatch(UserApiActions.usersLoadedSuccess({ users }));
+        this.store.dispatch(StatusApiActions.groupsLoadedSuccess({ groups }));
+        this.store.dispatch(
+          StatusApiActions.groupLoadedSuccess({ group: groups[0] })
+        );
 
-      groups.forEach((group) => {
-        if (!this.groupSockets.has(group._id)) {
-          this.groupSockets.set(group._id, io(this.url + '/' + group._id));
-          this.groupSockets.get(group._id)?.on('history', (res: History[]) => {
-            this.store.dispatch(
-              HistoryApiActions.historyLoadedSuccess({ histories: res })
-            );
-          });
-          this.groupSockets
-            .get(group._id)
-            ?.on('broadcastMessage', (res: History) => {
-              let currentHistory: History[] = [];
-              this.store
-                .select(hisotryFeature.selectAll)
-                .pipe(first())
-                .subscribe((history) => {
-                  currentHistory = [...history];
-                });
-              currentHistory.push(res);
-              this.store.dispatch(
-                HistoryApiActions.historyLoadedSuccess({
-                  histories: currentHistory,
-                })
-              );
-            });
-        }
-      });
-    });
+        groups.forEach((group) => {
+          if (!this.groupSockets.has(group._id)) {
+            this.groupSockets.set(group._id, io(this.url + '/' + group._id));
+            this.groupSockets
+              .get(group._id)
+              ?.on('history', (res: History[]) => {
+                this.store.dispatch(
+                  HistoryApiActions.historyLoadedSuccess({ histories: res })
+                );
+              });
+            this.groupSockets
+              .get(group._id)
+              ?.on('broadcastMessage', (res: History) => {
+                let currentHistory: History[] = [];
+                this.store
+                  .select(hisotryFeature.selectAll)
+                  .pipe(first())
+                  .subscribe((history) => {
+                    currentHistory = [...history];
+                  });
+                currentHistory.push(res);
+                this.store.dispatch(
+                  HistoryApiActions.historyLoadedSuccess({
+                    histories: currentHistory,
+                  })
+                );
+              });
+          }
+        });
+      }
+    );
 
     this.socket.on('findUserResponse', (response) => {
       this.store.dispatch(
-        StatusApiActions.userLoadedSuccess({ user: response.user })
+        UserApiActions.loadLoggedInUser({ userId: response.user._id })
       );
     });
   }
@@ -107,13 +116,18 @@ export class ChatService {
       .select(statusFeature.selectStatusState)
       .pipe(first())
       .subscribe((state) => {
-        this.groupSockets
-          .get(state.activatedGroup!._id.toString())
-          ?.emit('newMessage', {
-            message: message,
-            user: state.loggedInUser,
-            roomId: state.joinedRoom,
-            time: new Date(Date.now()),
+        this.store
+          .select(userFeature.selectUserById)
+          .pipe(first())
+          .subscribe((user) => {
+            this.groupSockets
+              .get(state.activatedGroup!._id.toString())
+              ?.emit('newMessage', {
+                message: message,
+                user: user,
+                roomId: state.joinedRoom,
+                time: new Date(Date.now()),
+              });
           });
       });
   }

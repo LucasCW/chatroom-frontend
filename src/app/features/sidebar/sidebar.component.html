@@ -18,6 +18,7 @@
       class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
       id="dropdownUser1"
       data-bs-toggle="dropdown"
+      data-bs-auto-close="outside"
       aria-expanded="false"
     >
       <!-- User icon -->
@@ -36,6 +37,21 @@
       aria-labelledby="dropdownUser1"
     >
       <li><a class="dropdown-item">Logout</a></li>
+      <li>
+        <mat-form-field>
+          <mat-label>Select A User</mat-label>
+          <mat-select
+            panelClass="bg-dark test"
+            (selectionChange)="onSelect($event)"
+          >
+            @for (user of users$ | async; track user) {
+            <mat-option class="text-white" [value]="user._id">{{
+              user.username
+            }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </li>
     </ul>
   </div>
 </div>

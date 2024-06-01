@@ -4,7 +4,6 @@ import { User } from '../../data/User';
 import { StatusApiActions } from './status-api.actions';
 
 export interface State {
-  loggedInUser: User | null;
   joinedRoom: string | null;
   activatedGroup: Group | null;
   groups: Group[];
@@ -12,7 +11,6 @@ export interface State {
 
 const initState: State = {
   // TODO skipping login process
-  loggedInUser: null,
   joinedRoom: null,
   activatedGroup: null,
   groups: [],
@@ -22,9 +20,6 @@ export const statusFeature = createFeature({
   name: 'status',
   reducer: createReducer(
     initState,
-    on(StatusApiActions.userLoadedSuccess, (state, action) => {
-      return { ...state, loggedInUser: { ...action.user } };
-    }),
     on(StatusApiActions.roomLoadedSuccess, (state, action) => {
       return { ...state, joinedRoom: action.roomId };
     }),
