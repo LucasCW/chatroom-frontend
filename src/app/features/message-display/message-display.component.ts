@@ -5,6 +5,9 @@ import { hisotryFeature } from '../../core/store/history/history.reducer';
 import { statusFeature } from '../../core/store/status/status.reducer';
 import { MessageBoxComponent } from '../message-box/message-box.component';
 import { MessageComponent } from '../message/message.component';
+import { userFeature } from '../../core/store/user/user.reducer';
+import { first, map } from 'rxjs';
+import { History } from '../../core/data/History';
 
 @Component({
   selector: 'app-message-display',
@@ -19,4 +22,17 @@ export class MessageDisplayComponent {
   room$ = this.store.select(statusFeature.selectJoinedRoom);
 
   history$ = this.store.select(hisotryFeature.selectAll);
+
+  isLoggedInUser(history: History) {
+    return this.store.select(userFeature.selectLoggedInUser).pipe(
+      first(),
+      map((userId) => {
+        if (userId == history.user._id) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    );
+  }
 }

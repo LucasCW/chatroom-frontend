@@ -16,7 +16,7 @@ import { userFeature } from '../store/user/user.reducer';
   providedIn: 'root',
 })
 export class ChatService {
-  url = 'localhost:3000';
+  url = '192.168.1.33:3000';
   socket!: Socket;
 
   store = inject(Store);

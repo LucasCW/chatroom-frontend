@@ -1,12 +1,16 @@
 <div class="d-flex flex-column px-0 h-100">
   @if (room$ | async) { @if((history$ | async)!.length > 0) {
-  <div class="flex-fill ms-3 mt-3">
+  <div class="flex-fill ms-3 mt-3 d-flex flex-column">
     @for (history of history$ | async; track $index) {
-    <app-message
-      [username]="history.user.username"
-      [message]="history.message"
-    ></app-message>
-    }
+    @if(isLoggedInUser(history) | async) {
+    <div>
+      <app-message [history]="history"></app-message>
+    </div>
+    } @else {
+    <div class="align-self-end me-3">
+      <app-message [history]="history"></app-message>
+    </div>
+    } }
   </div>
   } @else {
   <div

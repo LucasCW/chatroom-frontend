@@ -1,3 +1,11 @@
+<div class="fs-6 mb-1">
+  <a href="#" class="link-primary" (click)="(true)">{{
+    history.user.username
+  }}</a>
+  {{ "@" + (history.time | date : "MMM d, y, h:mm:ss a") }}
+</div>
 <div>
-  <p class="mb-0">{{ username }} : {{ message }}</p>
+  <p class="mb-0 fs-4 p-2 d-inline-block rounded message">
+    {{ history.message }}
+  </p>
 </div>
