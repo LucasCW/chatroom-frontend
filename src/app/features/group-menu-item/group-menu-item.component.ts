@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Group } from '../../core/data/Group';
 import { ChatService } from '../../core/services/chat.service';
 import { statusFeature } from '../../core/store/status/status.reducer';
+import { HistoryApiActions } from '../../core/store/history/history-api.actions';
 
 @Component({
   selector: 'app-group-menu-item',
@@ -24,5 +25,6 @@ export class GroupMenuItemComponent {
   openRoom(roomId: string) {
     this.chatService.openGroup(this.group._id);
     this.chatService.joinRoom(this.group._id, roomId);
+    this.store.dispatch(HistoryApiActions.displayHistory({ id: roomId }));
   }
 }

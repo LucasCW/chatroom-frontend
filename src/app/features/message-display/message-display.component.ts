@@ -21,10 +21,12 @@ export class MessageDisplayComponent {
 
   room$ = this.store.select(statusFeature.selectJoinedRoom);
 
-  history$ = this.store.select(hisotryFeature.selectAll);
+  history$ = this.store.select(hisotryFeature.selectByDisplayedId);
+
+  loggedInUser$ = this.store.select(userFeature.selectLoggedInUser);
 
   isLoggedInUser(history: History) {
-    return this.store.select(userFeature.selectLoggedInUser).pipe(
+    return this.loggedInUser$.pipe(
       first(),
       map((userId) => {
         if (userId == history.user._id) {

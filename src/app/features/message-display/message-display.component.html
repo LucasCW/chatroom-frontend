@@ -8,7 +8,10 @@
     </div>
     } @else {
     <div class="align-self-end me-3">
-      <app-message [history]="history"></app-message>
+      <app-message
+        [history]="history"
+        [currentUser]="loggedInUser$ | async"
+      ></app-message>
     </div>
     } }
   </div>

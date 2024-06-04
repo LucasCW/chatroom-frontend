@@ -1,0 +1,26 @@
+<ul class="list-unstyled ps-0">
+  <li class="mb-1">
+    <button
+      class="btn btn-toggle align-items-center rounded"
+      data-bs-toggle="collapse"
+      [attr.data-bs-target]="'#privateChannel'"
+      aria-expanded="true"
+    >
+      Private Channels
+    </button>
+    <div class="collapse show" [attr.id]="'privateChannel'">
+      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+        @for (privateChannel of privateChannels$ | async; track
+        privateChannel._id) {
+        <li>
+          <a
+            class="link-dark rounded text-white"
+            (click)="openPrivateChannel(privateChannel._id)"
+            >{{ privateChannel._id }}</a
+          >
+        </li>
+        }
+      </ul>
+    </div>
+  </li>
+</ul>
