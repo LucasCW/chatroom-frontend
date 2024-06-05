@@ -22,6 +22,9 @@ export const userFeature = createFeature({
     }),
     on(UserApiActions.loadLoggedInUser, (state, action) => {
       return { ...state, loggedInUser: action.userId };
+    }),
+    on(UserApiActions.logoutSuccess, (state, _) => {
+      return { ...state, loggedInUser: null };
     })
   ),
   extraSelectors: ({

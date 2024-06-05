@@ -36,6 +36,9 @@ export const hisotryFeature = createFeature({
     }),
     on(HistoryApiActions.displayHistory, (state, action) => {
       return { ...state, loadedHistory: action.id };
+    }),
+    on(HistoryApiActions.reset, (state, _) => {
+      return adapter.removeAll({ ...state, loadedHistory: null });
     })
   ),
   extraSelectors: ({

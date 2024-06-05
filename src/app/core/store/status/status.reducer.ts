@@ -41,6 +41,15 @@ export const statusFeature = createFeature({
       const privateChannels = [...state.privateChannels];
       privateChannels.push(action.privateChannel);
       return { ...state, privateChannels };
+    }),
+    on(StatusApiActions.reset, (state, _) => {
+      return {
+        ...state,
+        joinedRoom: null,
+        activatedGroup: null,
+        privateChannels: [],
+        // groups: [],
+      };
     })
   ),
 });

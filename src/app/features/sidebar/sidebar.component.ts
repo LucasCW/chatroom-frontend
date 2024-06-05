@@ -10,6 +10,9 @@ import { userFeature } from '../../core/store/user/user.reducer';
 import { LoginComponent } from '../../login/login.component';
 import { GroupMenuComponent } from '../group-menu/group-menu.component';
 import { PrivateChannelsComponent } from '../private-channels/private-channels.component';
+import { UserApiActions } from '../../core/store/user/user-api.actions';
+import { HistoryApiActions } from '../../core/store/history/history-api.actions';
+import { StatusApiActions } from '../../core/store/status/status-api.actions';
 
 @Component({
   selector: 'app-sidebar',
@@ -41,6 +44,15 @@ export class SidebarComponent {
       })
       .result.then((result) => {
         console.log(`Closed with: ${result}`);
+      })
+      .catch((reason: any) => {
+        console.log('Error reason', reason);
       });
+  }
+
+  logout() {
+    this.store.dispatch(UserApiActions.logoutSuccess());
+    this.store.dispatch(HistoryApiActions.reset());
+    this.store.dispatch(StatusApiActions.reset());
   }
 }

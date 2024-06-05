@@ -1,4 +1,4 @@
-import { createActionGroup, props } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { User } from '../../data/User';
 
 export const UserApiActions = createActionGroup({
@@ -6,5 +6,6 @@ export const UserApiActions = createActionGroup({
   events: {
     usersLoadedSuccess: props<{ users: User[] }>(),
     loadLoggedInUser: props<{ userId: string }>(),
+    logoutSuccess: emptyProps(),
   },
 });

@@ -47,11 +47,15 @@ export class LoginComponent implements OnInit {
           if (!!user) {
             this.chatService.logout(userId);
           }
+
           this.store.dispatch(UserApiActions.loadLoggedInUser({ userId }));
+          console.log(2);
           this.chatService.loadPrivateChannels(userId);
+          console.log(1);
           this.chatService.login(userId);
         });
     }
+    this.modal.close();
   }
 
   displayFn(user: User) {

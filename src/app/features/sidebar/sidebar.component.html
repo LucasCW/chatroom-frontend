@@ -19,7 +19,6 @@
       class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
       id="dropdownUser1"
       data-bs-toggle="dropdown"
-      data-bs-auto-close="outside"
       aria-expanded="false"
     >
       <!-- User icon -->
@@ -43,7 +42,7 @@
       aria-labelledby="dropdownUser1"
     >
       @if(!!(user$ | async)) {
-      <li><a class="dropdown-item">Logout</a></li>
+      <li><a href="#" class="dropdown-item" (click)="logout()">Logout</a></li>
       } @else {
       <li><a class="dropdown-item" (click)="open(content)">Login</a></li>
       }
