@@ -42,22 +42,15 @@
       class="dropdown-menu dropdown-menu-dark text-small shadow"
       aria-labelledby="dropdownUser1"
     >
+      @if(!!(user$ | async)) {
       <li><a class="dropdown-item">Logout</a></li>
-      <li>
-        <mat-form-field>
-          <mat-label>Select A User</mat-label>
-          <mat-select
-            panelClass="bg-dark test"
-            (selectionChange)="onSelect($event)"
-          >
-            @for (user of users$ | async; track user) {
-            <mat-option class="text-white" [value]="user._id">{{
-              user.username
-            }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </li>
+      } @else {
+      <li><a class="dropdown-item" (click)="open(content)">Login</a></li>
+      }
+
+      <ng-template #content let-modal>
+        <app-login [modal]="modal"></app-login>
+      </ng-template>
     </ul>
   </div>
 </div>

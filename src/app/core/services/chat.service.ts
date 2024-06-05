@@ -4,20 +4,18 @@ import { filter, first, map } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 import { Group } from '../data/Group';
 import { History } from '../data/History';
+import { User } from '../data/User';
 import { HistoryApiActions } from '../store/history/history-api.actions';
-import { hisotryFeature } from '../store/history/history.reducer';
 import { StatusApiActions } from '../store/status/status-api.actions';
 import { statusFeature } from '../store/status/status.reducer';
-import { User } from '../data/User';
 import { UserApiActions } from '../store/user/user-api.actions';
 import { userFeature } from '../store/user/user.reducer';
-import { PrivateChannel } from '../data/PrivateChannel';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  url = '192.168.1.33:3000';
+  url = 'localhost:3000';
   socket!: Socket;
 
   store = inject(Store);

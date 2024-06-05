@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-login-title">Login</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="modal-body">
+  <form>
+    <div class="mb-3">
+      <div class="input-group">
+        <mat-form-field class="w-100">
+          <mat-label>User</mat-label>
+          <input
+            type="text"
+            placeholder="Pick one"
+            aria-label="User"
+            matInput
+            [formControl]="userControl"
+            [matAutocomplete]="auto"
+            #test
+          />
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto="matAutocomplete"
+            [displayWith]="displayFn"
+          >
+            @for (user of filteredOptions | async; track user._id) {
+            <mat-option [value]="user">{{ user.username }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="onLogin()">
+    Save
+  </button>
+</div>

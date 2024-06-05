@@ -1,14 +1,14 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, TemplateRef, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
-import { filter, first } from 'rxjs';
-import { UserApiActions } from '../../core/store/user/user-api.actions';
-import { userFeature } from '../../core/store/user/user.reducer';
-import { GroupMenuComponent } from '../group-menu/group-menu.component';
 import { ChatService } from '../../core/services/chat.service';
+import { userFeature } from '../../core/store/user/user.reducer';
+import { LoginComponent } from '../../login/login.component';
+import { GroupMenuComponent } from '../group-menu/group-menu.component';
 import { PrivateChannelsComponent } from '../private-channels/private-channels.component';
 
 @Component({
@@ -17,36 +17,30 @@ import { PrivateChannelsComponent } from '../private-channels/private-channels.c
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   imports: [
-    GroupMenuComponent,
     AsyncPipe,
     MatInputModule,
     MatSelectModule,
+    GroupMenuComponent,
     MatFormFieldModule,
     PrivateChannelsComponent,
+    LoginComponent,
   ],
 })
 export class SidebarComponent {
   store = inject(Store);
   chatService = inject(ChatService);
 
-  user$ = this.store
-    .select(userFeature.selectUserById)
-    .pipe(filter((user) => user != null));
+  user$ = this.store.select(userFeature.selectUserById);
 
-  users$ = this.store.select(userFeature.selectAll);
+  private modalService = inject(NgbModal);
 
-  onSelect(event: MatSelectChange) {
-    const userId = event.value;
-    this.store
-      .select(userFeature.selectLoggedInUser)
-      .pipe(first())
-      .subscribe((user) => {
-        if (!!user) {
-          this.chatService.logout(userId);
-        }
-        this.store.dispatch(UserApiActions.loadLoggedInUser({ userId }));
-        this.chatService.loadPrivateChannels(userId);
-        this.chatService.login(userId);
+  open(content: TemplateRef<any>) {
+    this.modalService
+      .open(content, {
+        ariaLabelledBy: 'modal-basic-title',
+      })
+      .result.then((result) => {
+        console.log(`Closed with: ${result}`);
       });
   }
 }

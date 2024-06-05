@@ -30,3 +30,12 @@ html {
 
   //   --mat-select-enabled-trigger-text-color: rgba(255, 255, 255, 0.87);
 }
+
+.modal {
+  --mdc-filled-text-field-label-text-color: #44474e;
+  --mdc-filled-text-field-container-color: #e0e2ec;
+}
+
+.cdk-overlay-container {
+  z-index: 1055;
+}
