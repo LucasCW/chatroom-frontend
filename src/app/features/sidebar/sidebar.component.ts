@@ -13,6 +13,7 @@ import { PrivateChannelsComponent } from '../private-channels/private-channels.c
 import { UserApiActions } from '../../core/store/user/user-api.actions';
 import { HistoryApiActions } from '../../core/store/history/history-api.actions';
 import { StatusApiActions } from '../../core/store/status/status-api.actions';
+import { PrivateChannelApiActions } from '../../core/store/privateChannel/private-channel-api.actions';
 
 @Component({
   selector: 'app-sidebar',
@@ -54,5 +55,6 @@ export class SidebarComponent {
     this.store.dispatch(UserApiActions.logoutSuccess());
     this.store.dispatch(HistoryApiActions.reset());
     this.store.dispatch(StatusApiActions.reset());
+    this.store.dispatch(PrivateChannelApiActions.reset());
   }
 }

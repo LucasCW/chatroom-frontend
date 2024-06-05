@@ -1,10 +1,11 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { statusFeature } from '../../core/store/status/status.reducer';
-import { AsyncPipe } from '@angular/common';
 import { ChatService } from '../../core/services/chat.service';
-import { StatusApiActions } from '../../core/store/status/status-api.actions';
 import { HistoryApiActions } from '../../core/store/history/history-api.actions';
+import { PrivateChannelApiActions } from '../../core/store/privateChannel/private-channel-api.actions';
+import { privateChannelFeature } from '../../core/store/privateChannel/private-channel.reducer';
+import { StatusApiActions } from '../../core/store/status/status-api.actions';
 
 @Component({
   selector: 'app-private-channels',
@@ -17,12 +18,14 @@ export class PrivateChannelsComponent {
   store = inject(Store);
   chatService = inject(ChatService);
 
-  privateChannels$ = this.store.select(statusFeature.selectPrivateChannels);
+  privateChannels$ = this.store.select(privateChannelFeature.selectAll);
 
   openPrivateChannel(channelId: string) {
     this.store.dispatch(StatusApiActions.openPrivateChannel());
     this.store.dispatch(
-      StatusApiActions.roomLoadedSuccess({ roomId: channelId })
+      PrivateChannelApiActions.privateChannelLoadedSuccess({
+        privateChannelId: channelId,
+      })
     );
     this.store.dispatch(HistoryApiActions.displayHistory({ id: channelId }));
   }

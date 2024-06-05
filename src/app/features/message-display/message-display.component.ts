@@ -8,6 +8,7 @@ import { MessageComponent } from '../message/message.component';
 import { userFeature } from '../../core/store/user/user.reducer';
 import { first, map } from 'rxjs';
 import { History } from '../../core/data/History';
+import { privateChannelFeature } from '../../core/store/privateChannel/private-channel.reducer';
 
 @Component({
   selector: 'app-message-display',
@@ -20,6 +21,9 @@ export class MessageDisplayComponent {
   store = inject(Store);
 
   room$ = this.store.select(statusFeature.selectJoinedRoom);
+  privateChannel$ = this.store.select(
+    privateChannelFeature.selectJoinedChannelId
+  );
 
   history$ = this.store.select(hisotryFeature.selectByDisplayedId);
 

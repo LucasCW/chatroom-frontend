@@ -10,6 +10,9 @@ import { StatusApiActions } from '../store/status/status-api.actions';
 import { statusFeature } from '../store/status/status.reducer';
 import { UserApiActions } from '../store/user/user-api.actions';
 import { userFeature } from '../store/user/user.reducer';
+import { PrivateChannelApiActions } from '../store/privateChannel/private-channel-api.actions';
+import { privateChannelFeature } from '../store/privateChannel/private-channel.reducer';
+import { selectMessageSending } from '../store/multi-feature.selectors';
 
 @Injectable({
   providedIn: 'root',
@@ -67,8 +70,14 @@ export class ChatService {
 
     this.socket.on('privateChatChannelCreated', (response) => {
       this.store.dispatch(
-        StatusApiActions.privateChannelCreatedSuccess({
+        PrivateChannelApiActions.privateChannelCreatedSuccess({
           privateChannel: response.privateChannel,
+        })
+      );
+      this.store.dispatch(
+        HistoryApiActions.historyLoadedSuccess({
+          id: response.privateChannel._id.toString(),
+          histories: [],
         })
       );
     });
@@ -79,7 +88,7 @@ export class ChatService {
 
     this.socket.on('privateChannelsLoaded', (response) => {
       this.store.dispatch(
-        StatusApiActions.privateChannelLoadedSuccess({
+        PrivateChannelApiActions.privateChannelsLoadedSuccess({
           privateChannels: response.privateChannels,
         })
       );
@@ -147,32 +156,42 @@ export class ChatService {
 
   send(message: string) {
     this.store
-      .select(statusFeature.selectStatusState)
+      .select(selectMessageSending)
       .pipe(first())
-      .subscribe((state) => {
-        this.store
-          .select(userFeature.selectUserById)
-          .pipe(first())
-          .subscribe((user) => {
-            if (!!state.activatedGroup) {
-              this.groupSockets
-                .get(state.activatedGroup!._id.toString())
-                ?.emit('newMessage', {
-                  message: message,
-                  user: user,
-                  roomId: state.joinedRoom,
-                  time: new Date(Date.now()),
-                });
-            } else {
-              this.socket.emit('newMessage', {
+      .subscribe(
+        ({
+          activatedGroup,
+          joinedRoom,
+          user,
+          joinedPrivateChannel,
+        }: {
+          activatedGroup: Group | null;
+          joinedRoom: string | null;
+          user: User | undefined;
+          joinedPrivateChannel: string | null;
+        }) => {
+          console.log('joinedRoom', joinedRoom);
+          console.log('joinedPrivateChannel', joinedPrivateChannel);
+
+          if (!!activatedGroup) {
+            this.groupSockets
+              .get(activatedGroup!._id.toString())
+              ?.emit('newMessage', {
                 message: message,
                 user: user,
-                roomId: state.joinedRoom,
+                roomId: joinedRoom || joinedPrivateChannel,
                 time: new Date(Date.now()),
               });
-            }
-          });
-      });
+          } else {
+            this.socket.emit('newMessage', {
+              message: message,
+              user: user,
+              roomId: joinedRoom || joinedPrivateChannel,
+              time: new Date(Date.now()),
+            });
+          }
+        }
+      );
   }
 
   createPrivateChannel(currentUser: string, user: string) {

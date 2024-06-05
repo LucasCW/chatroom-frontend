@@ -3,7 +3,7 @@ import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { User } from '../../data/User';
 import { UserApiActions } from './user-api.actions';
 
-interface State extends EntityState<User> {
+export interface State extends EntityState<User> {
   loggedInUser: string | null;
 }
 

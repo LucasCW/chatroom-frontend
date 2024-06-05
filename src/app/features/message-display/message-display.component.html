@@ -1,5 +1,6 @@
 <div class="d-flex flex-column px-0 h-100">
-  @if (room$ | async) { @if((history$ | async)!.length > 0) {
+  @if ((room$ | async) || (privateChannel$ | async)) { @if((history$ |
+  async)!.length > 0) {
   <div class="flex-fill ms-3 mt-3 d-flex flex-column">
     @for (history of history$ | async; track $index) {
     @if(isLoggedInUser(history) | async) {

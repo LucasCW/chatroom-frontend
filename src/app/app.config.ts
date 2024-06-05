@@ -9,6 +9,7 @@ import { routes } from './app.routes';
 import { hisotryFeature } from './core/store/history/history.reducer';
 import { statusFeature } from './core/store/status/status.reducer';
 import { userFeature } from './core/store/user/user.reducer';
+import { privateChannelFeature } from './core/store/privateChannel/private-channel.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideState(statusFeature),
     provideState(hisotryFeature),
     provideState(userFeature),
+    provideState(privateChannelFeature),
     provideEffects(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideAnimationsAsync(),

@@ -3,7 +3,8 @@ import { History } from '../../data/History';
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { HistoryApiActions } from './history-api.actions';
 
-interface State extends EntityState<{ id: string; histories: History[] }> {
+export interface State
+  extends EntityState<{ id: string; histories: History[] }> {
   loadedHistory: string | null;
 }
 

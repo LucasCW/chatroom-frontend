@@ -9,8 +9,6 @@ export const StatusApiActions = createActionGroup({
     groupLoadedSuccess: props<{ group: Group }>(),
     openPrivateChannel: emptyProps(),
     groupsLoadedSuccess: props<{ groups: Group[] }>(),
-    privateChannelLoadedSuccess: props<{ privateChannels: PrivateChannel[] }>(),
-    privateChannelCreatedSuccess: props<{ privateChannel: PrivateChannel }>(),
     reset: emptyProps(),
   },
 });

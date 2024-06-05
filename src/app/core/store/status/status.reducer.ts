@@ -7,7 +7,6 @@ export interface State {
   joinedRoom: string | null;
   activatedGroup: Group | null;
   groups: Group[];
-  privateChannels: PrivateChannel[];
 }
 
 const initState: State = {
@@ -15,7 +14,6 @@ const initState: State = {
   joinedRoom: null,
   activatedGroup: null,
   groups: [],
-  privateChannels: [],
 };
 
 export const statusFeature = createFeature({
@@ -31,24 +29,14 @@ export const statusFeature = createFeature({
     on(StatusApiActions.groupsLoadedSuccess, (state, action) => {
       return { ...state, groups: [...action.groups] };
     }),
-    on(StatusApiActions.privateChannelLoadedSuccess, (state, action) => {
-      return { ...state, privateChannels: action.privateChannels };
-    }),
     on(StatusApiActions.openPrivateChannel, (state, action) => {
-      return { ...state, activatedGroup: null };
-    }),
-    on(StatusApiActions.privateChannelCreatedSuccess, (state, action) => {
-      const privateChannels = [...state.privateChannels];
-      privateChannels.push(action.privateChannel);
-      return { ...state, privateChannels };
+      return { ...state, activatedGroup: null, joinedRoom: null };
     }),
     on(StatusApiActions.reset, (state, _) => {
       return {
         ...state,
         joinedRoom: null,
         activatedGroup: null,
-        privateChannels: [],
-        // groups: [],
       };
     })
   ),
