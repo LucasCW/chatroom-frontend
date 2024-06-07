@@ -17,18 +17,7 @@ import { PrivateChannelApiActions } from '../../core/store/privateChannel/privat
   templateUrl: './chatroom.component.html',
   styleUrl: './chatroom.component.scss',
 })
-export class ChatroomComponent implements OnInit {
-  ngOnInit(): void {
-    // this.unreadMessages$ = this.store
-    //   .select(selectHistoryById(this.room._id))
-    //   .pipe(
-    //     map((histories) => {
-    //       console.log('histories', histories);
-    //       return histories!.histories.filter((history) => !history.isRead)
-    //         .length;
-    //     })
-    //   );
-  }
+export class ChatroomComponent {
   @Input()
   group!: Group;
 
@@ -42,10 +31,11 @@ export class ChatroomComponent implements OnInit {
 
   unreadMessages$ = this.store.select(hisotryFeature.selectEntities).pipe(
     map((histories) => {
-      console.log('unreadMessage updated');
-      return histories[this.room._id]?.histories.filter(
-        (history) => !history.isRead
-      ).length;
+      return histories[this.room._id]
+        ? histories[this.room._id]!.histories.filter(
+            (history) => !history.isRead
+          ).length
+        : 0;
     })
   );
 

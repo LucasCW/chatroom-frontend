@@ -30,10 +30,11 @@ export class PrivateChannelComponent {
 
   unreadMessages$ = this.store.select(hisotryFeature.selectEntities).pipe(
     map((histories) => {
-      console.log('unreadMessage updated');
-      return histories[this.privateChannel._id]?.histories.filter(
-        (history) => !history.isRead
-      ).length;
+      return histories[this.privateChannel._id]
+        ? histories[this.privateChannel._id]!.histories.filter(
+            (history) => !history.isRead
+          ).length
+        : 0;
     })
   );
 

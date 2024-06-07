@@ -6,6 +6,8 @@
       active: (joinedChannelId$ | async) == privateChannel._id
     }"
     >{{ getDisplayName(privateChannel) }}
+    @if((unreadMessages$ | async)! > 0) {
     <span class="badge bg-danger ms-3">{{ unreadMessages$ | async }}</span>
+    }
   </a>
 </li>
