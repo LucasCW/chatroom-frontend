@@ -43,7 +43,7 @@ export class PrivateChannelComponent {
   }
 
   openPrivateChannel(channelId: string) {
-    this.store.dispatch(StatusApiActions.openPrivateChannel());
+    this.store.dispatch(StatusApiActions.leaveChatroom());
     this.store.dispatch(
       PrivateChannelApiActions.privateChannelLoadedSuccess({
         privateChannelId: channelId,

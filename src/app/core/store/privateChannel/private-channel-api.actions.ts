@@ -9,7 +9,7 @@ export const PrivateChannelApiActions = createActionGroup({
       privateChannels: PrivateChannel[];
     }>(),
     privateChannelCreatedSuccess: props<{ privateChannel: PrivateChannel }>(),
-    joinedChatroom: emptyProps(),
+    leavePrivateChannel: emptyProps(),
     reset: emptyProps(),
   },
 });

@@ -43,6 +43,6 @@ export class ChatroomComponent {
     this.chatService.openGroup(this.group._id);
     this.chatService.joinRoom(this.group._id, roomId);
     this.store.dispatch(HistoryApiActions.displayHistory({ id: roomId }));
-    this.store.dispatch(PrivateChannelApiActions.joinedChatroom());
+    this.store.dispatch(PrivateChannelApiActions.leavePrivateChannel());
   }
 }

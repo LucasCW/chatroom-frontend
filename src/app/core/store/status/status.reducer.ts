@@ -1,6 +1,5 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { Group } from '../../data/Group';
-import { PrivateChannel } from '../../data/PrivateChannel';
 import { StatusApiActions } from './status-api.actions';
 
 export interface State {
@@ -29,7 +28,7 @@ export const statusFeature = createFeature({
     on(StatusApiActions.groupsLoadedSuccess, (state, action) => {
       return { ...state, groups: [...action.groups] };
     }),
-    on(StatusApiActions.openPrivateChannel, (state, action) => {
+    on(StatusApiActions.leaveChatroom, (state, action) => {
       return { ...state, activatedGroup: null, joinedRoom: null };
     }),
     on(StatusApiActions.reset, (state, _) => {

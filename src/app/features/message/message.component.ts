@@ -48,7 +48,7 @@ export class MessageComponent {
                   privateChannelId: privateChannel._id,
                 })
               );
-              this.store.dispatch(StatusApiActions.openPrivateChannel());
+              this.store.dispatch(StatusApiActions.leaveChatroom());
             })()
           : this.chatService.createPrivateChannel(
               this.currentUser!,
