@@ -11,15 +11,7 @@
     <div class="collapse show" [attr.id]="group._id">
       <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
         @for (room of group.rooms; track room._id) {
-        <li>
-          <a
-            class="link-dark rounded text-white fs-6"
-            (click)="openRoom(room._id)"
-            [ngClass]="{ active: (joinedRoom$ | async) == room._id }"
-            >{{ room.name }}
-            <span class="badge bg-danger ms-3">4</span>
-          </a>
-        </li>
+        <app-chatroom [room]="room" [group]="group"></app-chatroom>
         }
       </ul>
     </div>

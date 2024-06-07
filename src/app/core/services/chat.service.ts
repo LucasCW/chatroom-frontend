@@ -6,13 +6,11 @@ import { Group } from '../data/Group';
 import { History } from '../data/History';
 import { User } from '../data/User';
 import { HistoryApiActions } from '../store/history/history-api.actions';
+import { selectMessageSending } from '../store/multi-feature.selectors';
+import { PrivateChannelApiActions } from '../store/privateChannel/private-channel-api.actions';
 import { StatusApiActions } from '../store/status/status-api.actions';
 import { statusFeature } from '../store/status/status.reducer';
 import { UserApiActions } from '../store/user/user-api.actions';
-import { userFeature } from '../store/user/user.reducer';
-import { PrivateChannelApiActions } from '../store/privateChannel/private-channel-api.actions';
-import { privateChannelFeature } from '../store/privateChannel/private-channel.reducer';
-import { selectMessageSending } from '../store/multi-feature.selectors';
 
 @Injectable({
   providedIn: 'root',
@@ -52,9 +50,7 @@ export class ChatService {
                 'broadcastMessage',
                 (res: { id: string; history: History }) => {
                   console.log('message received', res);
-                  this.store.dispatch(
-                    HistoryApiActions.historyAddedSuccess(res)
-                  );
+                  this.store.dispatch(HistoryApiActions.historyReceived(res));
                 }
               );
           }
@@ -101,7 +97,7 @@ export class ChatService {
       'broadcastMessage',
       (res: { id: string; history: History }) => {
         console.log('message received', res);
-        this.store.dispatch(HistoryApiActions.historyAddedSuccess(res));
+        this.store.dispatch(HistoryApiActions.historyReceived(res));
       }
     );
 
@@ -149,6 +145,7 @@ export class ChatService {
       .subscribe();
   }
 
+  // TODO this should be updated to make sure all rooms are joined when the app is loaded.
   async joinRoom(groupId: string, roomId: string) {
     await this.groupSockets.get(groupId)?.emitWithAck('joinRoom', roomId);
     this.store.dispatch(StatusApiActions.roomLoadedSuccess({ roomId: roomId }));

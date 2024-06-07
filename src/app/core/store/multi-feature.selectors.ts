@@ -2,6 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { privateChannelFeature } from './privateChannel/private-channel.reducer';
 import { statusFeature } from './status/status.reducer';
 import { userFeature } from './user/user.reducer';
+import { hisotryFeature } from './history/history.reducer';
 
 // const userFeature = createFeatureSelector<UserState>('user');
 // const historyFeature = createFeatureSelector<HistoryState>('history');
@@ -27,3 +28,19 @@ export const selectMessageSending = createSelector(
     return { activatedGroup, joinedRoom, user, joinedPrivateChannel };
   }
 );
+
+export const selectHistoryById = (id: string) =>
+  createSelector(
+    hisotryFeature.selectEntities,
+    statusFeature.selectJoinedRoom,
+    (histories, joinedRoomId) => {
+      console.log(
+        'histories: ',
+        histories[joinedRoomId!]?.id,
+        'joinedRoomId: ',
+        joinedRoomId
+      );
+      console.log('return', histories[joinedRoomId!]);
+      return histories[joinedRoomId!];
+    }
+  );

@@ -1,0 +1,11 @@
+<li>
+  <a
+    class="link-dark rounded text-white fs-6"
+    (click)="openPrivateChannel(privateChannel._id)"
+    [ngClass]="{
+      active: (joinedChannelId$ | async) == privateChannel._id
+    }"
+    >{{ getDisplayName(privateChannel) }}
+    <span class="badge bg-danger ms-3">{{ unreadMessages$ | async }}</span>
+  </a>
+</li>

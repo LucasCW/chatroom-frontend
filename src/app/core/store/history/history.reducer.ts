@@ -21,12 +21,21 @@ export const hisotryFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(HistoryApiActions.historyLoadedSuccess, (state, action) => {
-      console.log(action);
-      return adapter.setOne(action, { ...state });
+      action.histories.forEach((history) => {
+        return { ...history, isRead: true };
+      });
+      const history = { ...action };
+      const histories = history.histories.map((history) => {
+        return { ...history, isRead: true };
+      });
+      return adapter.setOne({ ...history, histories }, { ...state });
     }),
     on(HistoryApiActions.historyAddedSuccess, (state, action) => {
       const updatedHistory = [...state.entities[action.id]!.histories];
-      updatedHistory.push(action.history);
+      updatedHistory.push({
+        ...action.history,
+        isRead: action.creatorId == action.history.user._id,
+      });
       return adapter.updateOne(
         {
           id: action.id,
@@ -36,7 +45,17 @@ export const hisotryFeature = createFeature({
       );
     }),
     on(HistoryApiActions.displayHistory, (state, action) => {
-      return { ...state, loadedHistory: action.id };
+      const historyDisplayed = state.entities[action.id]?.histories;
+      const updatedHistory = historyDisplayed?.map((history) => {
+        return { ...history, isRead: true } as History;
+      });
+      return adapter.updateOne(
+        {
+          id: action.id,
+          changes: { id: action.id, histories: updatedHistory },
+        },
+        { ...state, loadedHistory: action.id }
+      );
     }),
     on(HistoryApiActions.reset, (state, _) => {
       return adapter.removeAll({ ...state, loadedHistory: null });

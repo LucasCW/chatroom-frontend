@@ -10,6 +10,7 @@ import { hisotryFeature } from './core/store/history/history.reducer';
 import { statusFeature } from './core/store/status/status.reducer';
 import { userFeature } from './core/store/user/user.reducer';
 import { privateChannelFeature } from './core/store/privateChannel/private-channel.reducer';
+import * as HistoryEffect from './core/store/history/history.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideState(hisotryFeature),
     provideState(userFeature),
     provideState(privateChannelFeature),
-    provideEffects(),
+    provideEffects(HistoryEffect),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideAnimationsAsync(),
   ],

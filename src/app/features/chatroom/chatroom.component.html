@@ -1,0 +1,9 @@
+<li>
+  <a
+    class="link-dark rounded text-white fs-6"
+    (click)="openRoom(room._id)"
+    [ngClass]="{ active: (joinedRoom$ | async) == room._id }"
+    >{{ room.name }}
+    <span class="badge bg-danger ms-3">{{ unreadMessages$ | async }}</span>
+  </a>
+</li>

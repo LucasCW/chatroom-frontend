@@ -10,4 +10,5 @@ export interface History {
   group: Group;
   room: Room;
   time: Date;
+  isRead: boolean;
 }

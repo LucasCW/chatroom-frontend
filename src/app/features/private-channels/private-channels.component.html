@@ -13,17 +13,9 @@
       <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
         @for (privateChannel of privateChannels$ | async; track
         privateChannel._id) {
-        <li>
-          <a
-            class="link-dark rounded text-white fs-6"
-            (click)="openPrivateChannel(privateChannel._id)"
-            [ngClass]="{
-              active: (joinedChannelId$ | async) == privateChannel._id
-            }"
-            >{{ getDisplayName(privateChannel) }}
-            <span class="badge bg-danger ms-3">4</span>
-          </a>
-        </li>
+        <app-private-channel
+          [privateChannel]="privateChannel"
+        ></app-private-channel>
         }
       </ul>
     </div>

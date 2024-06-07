@@ -1,42 +1,19 @@
 import { AsyncPipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { PrivateChannel } from '../../core/data/PrivateChannel';
-import { ChatService } from '../../core/services/chat.service';
-import { HistoryApiActions } from '../../core/store/history/history-api.actions';
-import { PrivateChannelApiActions } from '../../core/store/privateChannel/private-channel-api.actions';
 import { privateChannelFeature } from '../../core/store/privateChannel/private-channel.reducer';
-import { StatusApiActions } from '../../core/store/status/status-api.actions';
+import { PrivateChannelComponent } from '../private-channel/private-channel.component';
 
 @Component({
   selector: 'app-private-channels',
   standalone: true,
-  imports: [AsyncPipe, NgClass],
   templateUrl: './private-channels.component.html',
   styleUrl: './private-channels.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AsyncPipe, NgClass, PrivateChannelComponent],
 })
 export class PrivateChannelsComponent {
   store = inject(Store);
-  chatService = inject(ChatService);
 
   privateChannels$ = this.store.select(privateChannelFeature.selectAll);
-
-  joinedChannelId$ = this.store.select(
-    privateChannelFeature.selectJoinedChannelId
-  );
-
-  getDisplayName(privateChannel: PrivateChannel) {
-    return privateChannel.users.map((user) => user.username).join(', ');
-  }
-
-  openPrivateChannel(channelId: string) {
-    this.store.dispatch(StatusApiActions.openPrivateChannel());
-    this.store.dispatch(
-      PrivateChannelApiActions.privateChannelLoadedSuccess({
-        privateChannelId: channelId,
-      })
-    );
-    this.store.dispatch(HistoryApiActions.displayHistory({ id: channelId }));
-  }
 }

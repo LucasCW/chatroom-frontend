@@ -39,6 +39,9 @@ export const privateChannelFeature = createFeature({
     ),
     on(PrivateChannelApiActions.reset, (state, _) => {
       return adapter.removeAll({ ...state, joinedChannel: null });
+    }),
+    on(PrivateChannelApiActions.joinedChatroom, (state, _) => {
+      return { ...state, joinedChannelId: null };
     })
   ),
   extraSelectors: ({ selectPrivateChannelState }) => ({
