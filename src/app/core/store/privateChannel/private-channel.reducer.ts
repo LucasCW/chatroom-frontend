@@ -1,5 +1,5 @@
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
-import { createFeature, createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { PrivateChannel } from '../../data/PrivateChannel';
 import { PrivateChannelApiActions } from './private-channel-api.actions';
 
@@ -46,5 +46,17 @@ export const privateChannelFeature = createFeature({
   ),
   extraSelectors: ({ selectPrivateChannelState }) => ({
     ...adapter.getSelectors(selectPrivateChannelState),
+    existsChannel: (creatorId: string, userId: string) =>
+      createSelector(
+        adapter.getSelectors(selectPrivateChannelState).selectAll,
+        (privateChannels) => {
+          return privateChannels.find((privateChannel) => {
+            return (
+              privateChannel.users.map((user) => user._id).sort ==
+              [creatorId, userId].sort
+            );
+          });
+        }
+      ),
   }),
 });
