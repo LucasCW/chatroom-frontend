@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { PrivateChannel } from '../../core/data/PrivateChannel';
@@ -11,7 +11,7 @@ import { StatusApiActions } from '../../core/store/status/status-api.actions';
 @Component({
   selector: 'app-private-channels',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, NgClass],
   templateUrl: './private-channels.component.html',
   styleUrl: './private-channels.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +21,10 @@ export class PrivateChannelsComponent {
   chatService = inject(ChatService);
 
   privateChannels$ = this.store.select(privateChannelFeature.selectAll);
+
+  joinedChannelId$ = this.store.select(
+    privateChannelFeature.selectJoinedChannelId
+  );
 
   getDisplayName(privateChannel: PrivateChannel) {
     return privateChannel.users.map((user) => user.username).join(', ');

@@ -1,7 +1,7 @@
 <ul class="list-unstyled ps-0">
   <li class="mb-1">
     <button
-      class="btn btn-toggle align-items-center rounded"
+      class="btn btn-toggle align-items-center rounded fs-5"
       data-bs-toggle="collapse"
       [attr.data-bs-target]="'#' + group._id"
       aria-expanded="true"
@@ -13,11 +13,12 @@
         @for (room of group.rooms; track room._id) {
         <li>
           <a
-            class="link-dark rounded text-white"
+            class="link-dark rounded text-white fs-6"
             (click)="openRoom(room._id)"
             [ngClass]="{ active: (joinedRoom$ | async) == room._id }"
-            >{{ room.name }}</a
-          >
+            >{{ room.name }}
+            <span class="badge bg-danger ms-3">4</span>
+          </a>
         </li>
         }
       </ul>

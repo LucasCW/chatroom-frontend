@@ -2,7 +2,7 @@
 <ul class="list-unstyled ps-0">
   <li class="mb-1">
     <button
-      class="btn btn-toggle align-items-center rounded"
+      class="btn btn-toggle align-items-center rounded fs-5"
       data-bs-toggle="collapse"
       [attr.data-bs-target]="'#privateChannel'"
       aria-expanded="true"
@@ -15,10 +15,14 @@
         privateChannel._id) {
         <li>
           <a
-            class="link-dark rounded text-white"
+            class="link-dark rounded text-white fs-6"
             (click)="openPrivateChannel(privateChannel._id)"
-            >{{ getDisplayName(privateChannel) }}</a
-          >
+            [ngClass]="{
+              active: (joinedChannelId$ | async) == privateChannel._id
+            }"
+            >{{ getDisplayName(privateChannel) }}
+            <span class="badge bg-danger ms-3">4</span>
+          </a>
         </li>
         }
       </ul>
