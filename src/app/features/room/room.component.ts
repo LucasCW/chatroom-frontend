@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { ChatService } from '../../core/services/chat.service';
 import { statusFeature } from '../../core/store/status/status.reducer';
+import { StatusApiActions } from '../../core/store/status/status-api.actions';
 
 @Component({
   selector: 'app-room',
@@ -30,6 +31,8 @@ export class RoomComponent {
   roomId!: string;
 
   openRoom() {
-    this.chatService.joinRoom(this.groupId, this.roomId);
+    this.store.dispatch(
+      StatusApiActions.roomLoadedSuccess({ roomId: this.roomId })
+    );
   }
 }

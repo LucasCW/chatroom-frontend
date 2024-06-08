@@ -9,6 +9,7 @@ import { HistoryApiActions } from '../../core/store/history/history-api.actions'
 import { hisotryFeature } from '../../core/store/history/history.reducer';
 import { statusFeature } from '../../core/store/status/status.reducer';
 import { PrivateChannelApiActions } from '../../core/store/privateChannel/private-channel-api.actions';
+import { StatusApiActions } from '../../core/store/status/status-api.actions';
 
 @Component({
   selector: 'app-chatroom',
@@ -41,7 +42,7 @@ export class ChatroomComponent {
 
   openRoom(roomId: string) {
     this.chatService.openGroup(this.group._id);
-    this.chatService.joinRoom(this.group._id, roomId);
+    this.store.dispatch(StatusApiActions.roomLoadedSuccess({ roomId }));
     this.store.dispatch(HistoryApiActions.displayHistory({ id: roomId }));
     this.store.dispatch(PrivateChannelApiActions.leavePrivateChannel());
   }

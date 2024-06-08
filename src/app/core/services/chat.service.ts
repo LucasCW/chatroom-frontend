@@ -35,33 +35,80 @@ export class ChatService {
         );
 
         groups.forEach((group) => {
-          if (!this.groupSockets.has(group._id)) {
-            this.groupSockets.set(group._id, io(this.url + '/' + group._id));
-            this.groupSockets
-              .get(group._id)
-              ?.on('history', (res: { id: string; histories: History[] }) => {
-                this.store.dispatch(
-                  HistoryApiActions.historyLoadedSuccess(res)
-                );
-              });
-            this.groupSockets
-              .get(group._id)
-              ?.on(
-                'broadcastMessage',
-                (res: { id: string; history: History }) => {
-                  console.log('message received', res);
-                  this.store.dispatch(HistoryApiActions.historyReceived(res));
-                }
-              );
-          }
+          if (this.groupSockets.has(group._id)) return;
+
+          this.groupSockets.set(group._id, io(this.url + '/' + group._id));
+          this.groupSockets
+            .get(group._id)
+            ?.on('history', (res: { id: string; histories: History[] }) => {
+              this.store.dispatch(HistoryApiActions.historyLoadedSuccess(res));
+            });
+
+          this.groupSockets.get(group._id)?.io.on('reconnect', () => {
+            const that = this;
+            // debugger;
+            console.log('reconnect group', that.socket.active);
+            console.log('what the fuck?', this.groupSockets.get(group._id));
+            console.log("this.groupSockets.get(group._id)?.io.on('reconnect',");
+          });
+
+          this.groupSockets
+            .get(group._id)
+            ?.io.on('reconnect_attempt', (attempt) => {
+              console.log('socket: ', group._id, 'attempt:', attempt);
+            });
+
+          this.groupSockets.get(group._id)?.io.on('reconnect_failed', () => {
+            console.log('reconnect failed');
+          });
+
+          this.groupSockets.get(group._id)?.on('connect_error', (error) => {
+            if (this.groupSockets.get(group._id)?.active) {
+              // temporary failure, the socket will automatically try to reconnect
+            } else {
+              // the connection was denied by the server
+              // in that case, `socket.connect()` must be manually called in order to reconnect
+              console.log('Error??', error.message);
+            }
+          });
+
+          this.groupSockets.get(group._id)?.on('connect', () => {
+            console.log('number of room', group.rooms.length);
+            group.rooms.forEach((room) => {
+              console.log('joining group', group._id, 'room: ', room._id);
+              this.subscribeToRoom(group._id, room._id);
+            });
+          });
+
+          this.groupSockets
+            .get(group._id)
+            ?.on(
+              'broadcastMessage',
+              (res: { id: string; history: History }) => {
+                this.store.dispatch(HistoryApiActions.historyReceived(res));
+              }
+            );
         });
       }
     );
 
+    this.socket.on('connect', () => {
+      console.log('initial connect', this.socket.id);
+      const that = this;
+      //   debugger;
+    });
     this.socket.on('findUserResponse', (response) => {
       this.store.dispatch(
         UserApiActions.loadLoggedInUser({ userId: response.user._id })
       );
+    });
+
+    this.socket.on('reconnect', (res) => {
+      console.log('this socket reconnect', res);
+    });
+
+    this.socket.io.on('reconnect', (res) => {
+      console.log('this socket io reconnect', res, this.socket.id);
     });
 
     this.socket.on('privateChatChannelCreated', (response) => {
@@ -145,9 +192,13 @@ export class ChatService {
       .subscribe();
   }
 
+  async subscribeToRoom(groupId: string, roomId: string) {
+    await this.groupSockets.get(groupId)?.emitWithAck('joinRoom', roomId);
+  }
+
   // TODO this should be updated to make sure all rooms are joined when the app is loaded.
   async joinRoom(groupId: string, roomId: string) {
-    await this.groupSockets.get(groupId)?.emitWithAck('joinRoom', roomId);
+    await this.subscribeToRoom(groupId, roomId);
     this.store.dispatch(StatusApiActions.roomLoadedSuccess({ roomId: roomId }));
   }
 
