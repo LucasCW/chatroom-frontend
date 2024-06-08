@@ -40,7 +40,6 @@ export class MessageComponent {
       )
       .pipe(first())
       .subscribe((privateChannel) => {
-        debugger;
         !!privateChannel
           ? (() => {
               this.store.dispatch(

@@ -34,13 +34,6 @@ export const selectHistoryById = (id: string) =>
     hisotryFeature.selectEntities,
     statusFeature.selectJoinedRoom,
     (histories, joinedRoomId) => {
-      console.log(
-        'histories: ',
-        histories[joinedRoomId!]?.id,
-        'joinedRoomId: ',
-        joinedRoomId
-      );
-      console.log('return', histories[joinedRoomId!]);
       return histories[joinedRoomId!];
     }
   );

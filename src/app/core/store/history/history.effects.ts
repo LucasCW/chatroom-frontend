@@ -13,7 +13,6 @@ export const historyReceivedEffect = createEffect(
         return store.select(userFeature.selectLoggedInUser).pipe(
           first(),
           map((user) => {
-            console.log('this is a test from history received');
             return HistoryApiActions.historyAddedSuccess({
               id: id,
               history: history,
