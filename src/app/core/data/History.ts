@@ -1,7 +1,6 @@
 import { Group } from './Group';
 import { ID } from './ID';
-import { PrivateChannel } from './PrivateChannel';
-import { Room } from './Room';
+import * as CustomTypes from './Custom-types';
 import { User } from './User';
 
 export interface History extends ID {
@@ -9,7 +8,7 @@ export interface History extends ID {
   username: string;
   user: User;
   group: Group;
-  room: Room | PrivateChannel;
+  room: CustomTypes.ID;
   time: Date;
   isRead: boolean;
 }
