@@ -1,6 +1,6 @@
+import { ID } from './ID';
 import { User } from './User';
 
-export interface PrivateChannel {
-  _id: string;
+export interface PrivateChannel extends ID {
   users: User[];
 }

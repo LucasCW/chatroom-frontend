@@ -1,4 +1,5 @@
-export interface User {
-  _id: string;
+import { ID } from './ID';
+
+export interface User extends ID {
   username: string;
 }

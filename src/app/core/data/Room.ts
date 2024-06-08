@@ -1,5 +1,6 @@
-export interface Room {
-  _id: string;
+import { ID } from './ID';
+
+export interface Room extends ID {
   name: string;
   path: string;
 }
