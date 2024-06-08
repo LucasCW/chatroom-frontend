@@ -28,6 +28,7 @@ export class ChatService {
     this.socket.on(
       'groupsList',
       ({ groups, users }: { groups: Group[]; users: User[] }) => {
+        // TODO When reconnecting, probably should keep the state of the APP
         this.store.dispatch(UserApiActions.usersLoadedSuccess({ users }));
         this.store.dispatch(StatusApiActions.groupsLoadedSuccess({ groups }));
         this.store.dispatch(
@@ -47,7 +48,7 @@ export class ChatService {
           this.groupSockets.get(group._id)?.io.on('reconnect', () => {
             const that = this;
             // debugger;
-            console.log('reconnect group', that.socket.active);
+            console.debug('reconnect group', that.socket.active);
             console.log('what the fuck?', this.groupSockets.get(group._id));
             console.log("this.groupSockets.get(group._id)?.io.on('reconnect',");
           });
@@ -74,10 +75,6 @@ export class ChatService {
 
           this.groupSockets.get(group._id)?.on('connect', () => {
             console.log('number of room', group.rooms.length);
-            group.rooms.forEach((room) => {
-              console.log('joining group', group._id, 'room: ', room._id);
-              this.subscribeToRoom(group._id, room._id);
-            });
           });
 
           this.groupSockets
@@ -190,16 +187,6 @@ export class ChatService {
         })
       )
       .subscribe();
-  }
-
-  async subscribeToRoom(groupId: string, roomId: string) {
-    await this.groupSockets.get(groupId)?.emitWithAck('joinRoom', roomId);
-  }
-
-  // TODO this should be updated to make sure all rooms are joined when the app is loaded.
-  async joinRoom(groupId: string, roomId: string) {
-    await this.subscribeToRoom(groupId, roomId);
-    this.store.dispatch(StatusApiActions.roomLoadedSuccess({ roomId: roomId }));
   }
 
   send(message: string) {
