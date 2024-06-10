@@ -142,6 +142,7 @@ export class ChatService {
     this.socket.on('privateChannelsLoaded', (response) => {
       this.store.dispatch(
         GroupApiActions.privateChannelsLoadedSuccess({
+          group: response.privateGroup,
           rooms: response.privateChannels,
         })
       );

@@ -8,7 +8,7 @@ export const GroupApiActions = createActionGroup({
     roomLoadedSuccess: props<{ roomId: string; groupId: string }>(),
     groupsLoadedSuccess: props<{ groups: Group[] }>(),
     privateChannelCreatedSuccess: props<{ room: Room }>(),
-    privateChannelsLoadedSuccess: props<{ rooms: Room[] }>(),
+    privateChannelsLoadedSuccess: props<{ group: Group; rooms: Room[] }>(),
     groupLoadedSuccess: props<{ groupId: string }>(),
     reset: emptyProps(),
   },

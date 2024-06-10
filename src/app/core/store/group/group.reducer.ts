@@ -42,24 +42,18 @@ export const groupFeature = createFeature({
       );
     }),
     on(GroupApiActions.privateChannelsLoadedSuccess, (state, action) => {
-      const privateGroupId = state.ids.filter(
-        (id) => state.entities[id]?.type == GroupType.private
-      )[0] as string;
-      const privateGroup = state.entities[privateGroupId];
-
-      return adapter.updateOne(
-        {
-          id: privateGroupId,
-          changes: { ...privateGroup, rooms: action.rooms },
-        },
-        state
-      );
+      return adapter.addOne({ ...action.group, rooms: action.rooms }, state);
     }),
     on(GroupApiActions.reset, (state, _) => {
-      return adapter.removeAll({
+      const privateGroupId = state.ids.filter((id) => {
+        const group = state.entities[id];
+        return group?.type && group.type == GroupType.private;
+      })[0] as string;
+
+      return adapter.removeOne(privateGroupId, {
         ...state,
-        joinedRoomId: null,
         joinedGroupId: null,
+        joinedRoomId: null,
       });
     })
   ),

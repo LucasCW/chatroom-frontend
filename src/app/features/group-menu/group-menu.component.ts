@@ -19,7 +19,5 @@ export class GroupMenuComponent {
   @Input()
   group!: Group;
 
-  groups$ = this.store
-    .select(groupFeature.selectGroupByType(GroupType.public))
-    .pipe(filter((groups) => groups.length > 0));
+  groups$ = this.store.select(groupFeature.selectGroupByType(GroupType.public));
 }
