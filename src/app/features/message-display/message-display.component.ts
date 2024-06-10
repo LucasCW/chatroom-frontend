@@ -2,13 +2,12 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { hisotryFeature } from '../../core/store/history/history.reducer';
-import { statusFeature } from '../../core/store/status/status.reducer';
 import { MessageBoxComponent } from '../message-box/message-box.component';
 import { MessageComponent } from '../message/message.component';
 import { userFeature } from '../../core/store/user/user.reducer';
 import { first, map } from 'rxjs';
 import { History } from '../../core/data/History';
-import { privateChannelFeature } from '../../core/store/privateChannel/private-channel.reducer';
+import { groupFeature } from '../../core/store/group/group.reducer';
 
 @Component({
   selector: 'app-message-display',
@@ -20,10 +19,8 @@ import { privateChannelFeature } from '../../core/store/privateChannel/private-c
 export class MessageDisplayComponent {
   store = inject(Store);
 
-  room$ = this.store.select(statusFeature.selectJoinedRoom);
-  privateChannel$ = this.store.select(
-    privateChannelFeature.selectJoinedChannelId
-  );
+  room$ = this.store.select(groupFeature.selectJoinedRoomId);
+  privateChannel$ = this.store.select(groupFeature.selectJoinedRoomId);
 
   history$ = this.store.select(hisotryFeature.selectByDisplayedId);
 

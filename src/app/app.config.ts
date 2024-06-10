@@ -7,9 +7,8 @@ import { provideState, provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { routes } from './app.routes';
 import { hisotryFeature } from './core/store/history/history.reducer';
-import { statusFeature } from './core/store/status/status.reducer';
 import { userFeature } from './core/store/user/user.reducer';
-import { privateChannelFeature } from './core/store/privateChannel/private-channel.reducer';
+import { groupFeature } from './core/store/group/group.reducer';
 import * as HistoryEffect from './core/store/history/history.effects';
 
 export const appConfig: ApplicationConfig = {
@@ -17,10 +16,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideStore(),
-    provideState(statusFeature),
     provideState(hisotryFeature),
     provideState(userFeature),
-    provideState(privateChannelFeature),
+    provideState(groupFeature),
     provideEffects(HistoryEffect),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideAnimationsAsync(),

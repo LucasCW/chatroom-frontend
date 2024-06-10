@@ -3,8 +3,8 @@ import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Group } from '../../core/data/Group';
 import { ChatService } from '../../core/services/chat.service';
-import { statusFeature } from '../../core/store/status/status.reducer';
 import { ChatroomComponent } from '../chatroom/chatroom.component';
+import { groupFeature } from '../../core/store/group/group.reducer';
 
 @Component({
   selector: 'app-group-menu-item',
@@ -20,5 +20,5 @@ export class GroupMenuItemComponent {
   @Input()
   group!: Group;
 
-  joinedRoom$ = this.store.select(statusFeature.selectJoinedRoom);
+  joinedRoom$ = this.store.select(groupFeature.selectJoinedGroupId);
 }

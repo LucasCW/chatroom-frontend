@@ -1,8 +1,8 @@
 import { createSelector } from '@ngrx/store';
-import { privateChannelFeature } from './privateChannel/private-channel.reducer';
-import { statusFeature } from './status/status.reducer';
+import { groupFeature } from './group/group.reducer';
 import { userFeature } from './user/user.reducer';
 import { hisotryFeature } from './history/history.reducer';
+import { GroupType } from '../data/Group';
 
 // const userFeature = createFeatureSelector<UserState>('user');
 // const historyFeature = createFeatureSelector<HistoryState>('history');
@@ -20,19 +20,21 @@ import { hisotryFeature } from './history/history.reducer';
 // );
 
 export const selectMessageSending = createSelector(
-  statusFeature.selectActivatedGroup,
-  statusFeature.selectJoinedRoom,
+  groupFeature.selectEntities,
+  groupFeature.selectJoinedGroupId,
+  groupFeature.selectJoinedRoomId,
   userFeature.selectUserById,
-  privateChannelFeature.selectJoinedChannelId,
-  (activatedGroup, joinedRoom, user, joinedPrivateChannel) => {
-    return { activatedGroup, joinedRoom, user, joinedPrivateChannel };
+  (entities, activatedGroup, joinedRoom, user) => {
+    const isPrivateMessage =
+      entities[activatedGroup!]?.type == GroupType.private;
+    return { activatedGroup, joinedRoom, user, isPrivateMessage };
   }
 );
 
 export const selectHistoryById = (id: string) =>
   createSelector(
     hisotryFeature.selectEntities,
-    statusFeature.selectJoinedRoom,
+    groupFeature.selectJoinedRoomId,
     (histories, joinedRoomId) => {
       return histories[joinedRoomId!];
     }

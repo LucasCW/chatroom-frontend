@@ -15,6 +15,7 @@
         privateChannel._id) {
         <app-private-channel
           [privateChannel]="privateChannel"
+          [group]="(group$ | async)!"
         ></app-private-channel>
         }
       </ul>

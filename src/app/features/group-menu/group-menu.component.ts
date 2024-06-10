@@ -1,9 +1,10 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { statusFeature } from '../../core/store/status/status.reducer';
+import { filter, map } from 'rxjs';
+import { Group, GroupType } from '../../core/data/Group';
+import { groupFeature } from '../../core/store/group/group.reducer';
 import { GroupMenuItemComponent } from '../group-menu-item/group-menu-item.component';
-import { Group } from '../../core/data/Group';
 
 @Component({
   selector: 'app-group-menu',
@@ -18,5 +19,7 @@ export class GroupMenuComponent {
   @Input()
   group!: Group;
 
-  groups$ = this.store.select(statusFeature.selectGroups);
+  groups$ = this.store
+    .select(groupFeature.selectGroupByType(GroupType.public))
+    .pipe(filter((groups) => groups.length > 0));
 }

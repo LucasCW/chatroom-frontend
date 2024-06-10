@@ -7,9 +7,8 @@ import { Room } from '../../core/data/Room';
 import { ChatService } from '../../core/services/chat.service';
 import { HistoryApiActions } from '../../core/store/history/history-api.actions';
 import { hisotryFeature } from '../../core/store/history/history.reducer';
-import { statusFeature } from '../../core/store/status/status.reducer';
-import { PrivateChannelApiActions } from '../../core/store/privateChannel/private-channel-api.actions';
-import { StatusApiActions } from '../../core/store/status/status-api.actions';
+import { GroupApiActions } from '../../core/store/group/group-api.actions';
+import { groupFeature } from '../../core/store/group/group.reducer';
 
 @Component({
   selector: 'app-chatroom',
@@ -28,7 +27,7 @@ export class ChatroomComponent {
   store = inject(Store);
   chatService = inject(ChatService);
 
-  joinedRoom$ = this.store.select(statusFeature.selectJoinedRoom);
+  joinedRoom$ = this.store.select(groupFeature.selectJoinedRoomId);
 
   unreadMessages$ = this.store.select(hisotryFeature.selectEntities).pipe(
     map((histories) => {
@@ -41,9 +40,14 @@ export class ChatroomComponent {
   );
 
   openRoom(roomId: string) {
-    this.chatService.openGroup(this.group._id);
-    this.store.dispatch(StatusApiActions.roomLoadedSuccess({ roomId }));
+    console.log('open room clicked');
+    // this.chatService.openGroup(this.group._id);
+    this.store.dispatch(
+      GroupApiActions.roomLoadedSuccess({
+        roomId: roomId,
+        groupId: this.group._id,
+      })
+    );
     this.store.dispatch(HistoryApiActions.displayHistory({ id: roomId }));
-    this.store.dispatch(PrivateChannelApiActions.leavePrivateChannel());
   }
 }

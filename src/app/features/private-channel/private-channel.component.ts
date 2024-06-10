@@ -1,14 +1,14 @@
 import { Component, Input, inject } from '@angular/core';
-import { PrivateChannel } from '../../core/data/PrivateChannel';
 import { ChatService } from '../../core/services/chat.service';
 import { HistoryApiActions } from '../../core/store/history/history-api.actions';
-import { PrivateChannelApiActions } from '../../core/store/privateChannel/private-channel-api.actions';
-import { privateChannelFeature } from '../../core/store/privateChannel/private-channel.reducer';
-import { StatusApiActions } from '../../core/store/status/status-api.actions';
+import { GroupApiActions } from '../../core/store/group/group-api.actions';
+import { groupFeature } from '../../core/store/group/group.reducer';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { hisotryFeature } from '../../core/store/history/history.reducer';
 import { map } from 'rxjs';
+import { Room } from '../../core/data/Room';
+import { Group } from '../../core/data/Group';
 
 @Component({
   selector: 'app-private-channel',
@@ -22,11 +22,12 @@ export class PrivateChannelComponent {
   chatService = inject(ChatService);
 
   @Input()
-  privateChannel!: PrivateChannel;
+  privateChannel!: Room;
 
-  joinedChannelId$ = this.store.select(
-    privateChannelFeature.selectJoinedChannelId
-  );
+  @Input()
+  group!: Group;
+
+  joinedChannelId$ = this.store.select(groupFeature.selectJoinedRoomId);
 
   unreadMessages$ = this.store.select(hisotryFeature.selectEntities).pipe(
     map((histories) => {
@@ -38,15 +39,15 @@ export class PrivateChannelComponent {
     })
   );
 
-  getDisplayName(privateChannel: PrivateChannel) {
+  getDisplayName(privateChannel: Room) {
     return privateChannel.users.map((user) => user.username).join(', ');
   }
 
   openPrivateChannel(channelId: string) {
-    this.store.dispatch(StatusApiActions.leaveChatroom());
     this.store.dispatch(
-      PrivateChannelApiActions.privateChannelLoadedSuccess({
-        privateChannelId: channelId,
+      GroupApiActions.roomLoadedSuccess({
+        roomId: channelId,
+        groupId: this.group._id,
       })
     );
     this.store.dispatch(HistoryApiActions.displayHistory({ id: channelId }));

@@ -3,7 +3,7 @@ import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { ChatService } from '../../core/services/chat.service';
-import { statusFeature } from '../../core/store/status/status.reducer';
+import { groupFeature } from '../../core/store/group/group.reducer';
 
 @Component({
   selector: 'app-group',
@@ -16,9 +16,10 @@ export class GroupComponent {
   store = inject(Store);
   chatService = inject(ChatService);
 
+  // TODO !!!
   isSelected$ = this.store
-    .select(statusFeature.selectActivatedGroup)
-    .pipe(map((group) => group?._id == this.groupId));
+    .select(groupFeature.selectJoinedRoomId)
+    .pipe(map((group) => true));
 
   @Input()
   groupName!: string;
@@ -27,6 +28,6 @@ export class GroupComponent {
   groupId!: string;
 
   onChangeGroup() {
-    this.chatService.openGroup(this.groupId);
+    // this.chatService.openGroup(this.groupId);
   }
 }

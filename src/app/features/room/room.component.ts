@@ -3,8 +3,8 @@ import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { ChatService } from '../../core/services/chat.service';
-import { statusFeature } from '../../core/store/status/status.reducer';
-import { StatusApiActions } from '../../core/store/status/status-api.actions';
+import { GroupApiActions } from '../../core/store/group/group-api.actions';
+import { groupFeature } from '../../core/store/group/group.reducer';
 
 @Component({
   selector: 'app-room',
@@ -18,7 +18,7 @@ export class RoomComponent {
   chatService = inject(ChatService);
 
   isSelected$ = this.store
-    .select(statusFeature.selectJoinedRoom)
+    .select(groupFeature.selectJoinedRoomId)
     .pipe(map((roomId) => roomId == this.roomId));
 
   @Input()
@@ -32,7 +32,10 @@ export class RoomComponent {
 
   openRoom() {
     this.store.dispatch(
-      StatusApiActions.roomLoadedSuccess({ roomId: this.roomId })
+      GroupApiActions.roomLoadedSuccess({
+        roomId: this.roomId,
+        groupId: this.groupId,
+      })
     );
   }
 }

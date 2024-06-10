@@ -3,10 +3,10 @@ import { Component, Input, inject } from '@angular/core';
 import { History } from '../../core/data/History';
 import { ChatService } from '../../core/services/chat.service';
 import { Store } from '@ngrx/store';
-import { privateChannelFeature } from '../../core/store/privateChannel/private-channel.reducer';
+import { groupFeature } from '../../core/store/group/group.reducer';
 import { first } from 'rxjs';
-import { PrivateChannelApiActions } from '../../core/store/privateChannel/private-channel-api.actions';
-import { StatusApiActions } from '../../core/store/status/status-api.actions';
+import { GroupApiActions } from '../../core/store/group/group-api.actions';
+import { group } from '@angular/animations';
 
 @Component({
   selector: 'app-message',
@@ -33,21 +33,18 @@ export class MessageComponent {
 
     this.store
       .select(
-        privateChannelFeature.existsChannel(
-          this.currentUser,
-          this.history.user._id
-        )
+        groupFeature.existsChannel(this.currentUser, this.history.user._id)
       )
       .pipe(first())
       .subscribe((privateChannel) => {
         !!privateChannel
           ? (() => {
               this.store.dispatch(
-                PrivateChannelApiActions.privateChannelLoadedSuccess({
-                  privateChannelId: privateChannel._id,
+                GroupApiActions.roomLoadedSuccess({
+                  roomId: privateChannel._id,
+                  groupId: privateChannel.group._id,
                 })
               );
-              this.store.dispatch(StatusApiActions.leaveChatroom());
             })()
           : this.chatService.createPrivateChannel(
               this.currentUser!,

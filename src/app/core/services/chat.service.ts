@@ -1,15 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { filter, first, map } from 'rxjs';
+import { first, map } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
-import { Group } from '../data/Group';
+import { Group, GroupType } from '../data/Group';
 import { History } from '../data/History';
 import { User } from '../data/User';
 import { HistoryApiActions } from '../store/history/history-api.actions';
 import { selectMessageSending } from '../store/multi-feature.selectors';
-import { PrivateChannelApiActions } from '../store/privateChannel/private-channel-api.actions';
-import { StatusApiActions } from '../store/status/status-api.actions';
-import { statusFeature } from '../store/status/status.reducer';
+import { GroupApiActions } from '../store/group/group-api.actions';
+import { groupFeature } from '../store/group/group.reducer';
 import { UserApiActions } from '../store/user/user-api.actions';
 
 @Injectable({
@@ -30,10 +29,16 @@ export class ChatService {
       ({ groups, users }: { groups: Group[]; users: User[] }) => {
         // TODO When reconnecting, probably should keep the state of the APP
         this.store.dispatch(UserApiActions.usersLoadedSuccess({ users }));
-        this.store.dispatch(StatusApiActions.groupsLoadedSuccess({ groups }));
+
         this.store.dispatch(
-          StatusApiActions.groupLoadedSuccess({ group: groups[0] })
+          GroupApiActions.groupsLoadedSuccess({
+            groups: groups,
+          })
         );
+
+        // this.store.dispatch(
+        //   PrivateChannelApiActions.privateChannelLoadedSuccess({ pri: groups[0] })
+        // );
 
         groups.forEach((group) => {
           if (this.groupSockets.has(group._id)) return;
@@ -109,11 +114,19 @@ export class ChatService {
     });
 
     this.socket.on('privateChatChannelCreated', (response) => {
-      this.store.dispatch(
-        PrivateChannelApiActions.privateChannelCreatedSuccess({
-          privateChannel: response.privateChannel,
-        })
-      );
+      this.store
+        .select(groupFeature.selectGroupByType(GroupType.private))
+        .pipe(first())
+        .subscribe((groups) => {
+          const privateChannel = response.privateChannel;
+          privateChannel.group = groups[0];
+          this.store.dispatch(
+            GroupApiActions.privateChannelCreatedSuccess({
+              room: privateChannel,
+            })
+          );
+        });
+
       this.store.dispatch(
         HistoryApiActions.historyLoadedSuccess({
           id: response.privateChannel._id.toString(),
@@ -128,8 +141,8 @@ export class ChatService {
 
     this.socket.on('privateChannelsLoaded', (response) => {
       this.store.dispatch(
-        PrivateChannelApiActions.privateChannelsLoadedSuccess({
-          privateChannels: response.privateChannels,
+        GroupApiActions.privateChannelsLoadedSuccess({
+          rooms: response.privateChannels,
         })
       );
     });
@@ -164,10 +177,10 @@ export class ChatService {
   }
 
   getChatrooms(groupName: string) {
-    return this.store.select(statusFeature.selectGroups).pipe(
-      filter((groups) => groups.length != 0),
+    return this.store.select(groupFeature.selectAll).pipe(
+      //   filter((groups) => groups.length != 0),
       map((groups) => {
-        return groups.filter((group) => group.name == groupName)[0].rooms;
+        return groups.filter((group) => group.name == groupName);
       })
     );
   }
@@ -176,18 +189,18 @@ export class ChatService {
     this.socket.emit('findUser', { username: username });
   }
 
-  openGroup(groupId: string) {
-    this.store
-      .select(statusFeature.selectGroups)
-      .pipe(
-        first(),
-        map((groups) => {
-          const group = groups.filter((group) => group._id == groupId)[0];
-          this.store.dispatch(StatusApiActions.groupLoadedSuccess({ group }));
-        })
-      )
-      .subscribe();
-  }
+  //   openGroup(groupId: string) {
+  //     this.store
+  //       .select(statusFeature.selectGroups)
+  //       .pipe(
+  //         first(),
+  //         map((groups) => {
+  //           const group = groups.filter((group) => group._id == groupId)[0];
+  //           this.store.dispatch(StatusApiActions.groupLoadedSuccess({ group }));
+  //         })
+  //       )
+  //       .subscribe();
+  //   }
 
   send(message: string) {
     this.store
@@ -198,30 +211,25 @@ export class ChatService {
           activatedGroup,
           joinedRoom,
           user,
-          joinedPrivateChannel,
+          isPrivateMessage,
         }: {
-          activatedGroup: Group | null;
+          activatedGroup: string | null;
           joinedRoom: string | null;
           user: User | undefined;
-          joinedPrivateChannel: string | null;
+          isPrivateMessage: boolean;
         }) => {
-          console.log('joinedRoom', joinedRoom);
-          console.log('joinedPrivateChannel', joinedPrivateChannel);
-
-          if (!!activatedGroup) {
-            this.groupSockets
-              .get(activatedGroup!._id.toString())
-              ?.emit('newMessage', {
-                message: message,
-                user: user,
-                roomId: joinedRoom || joinedPrivateChannel,
-                time: new Date(Date.now()),
-              });
+          if (!isPrivateMessage) {
+            this.groupSockets.get(activatedGroup!)?.emit('newMessage', {
+              message: message,
+              user: user,
+              roomId: joinedRoom,
+              time: new Date(Date.now()),
+            });
           } else {
             this.socket.emit('newMessage', {
               message: message,
               user: user,
-              roomId: joinedRoom || joinedPrivateChannel,
+              roomId: joinedRoom,
               time: new Date(Date.now()),
             });
           }
