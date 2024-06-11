@@ -1,14 +1,14 @@
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import { Group } from '../../core/data/Group';
 import { Room } from '../../core/data/Room';
 import { ChatService } from '../../core/services/chat.service';
-import { HistoryApiActions } from '../../core/store/history/history-api.actions';
-import { hisotryFeature } from '../../core/store/history/history.reducer';
 import { GroupApiActions } from '../../core/store/group/group-api.actions';
 import { groupFeature } from '../../core/store/group/group.reducer';
+import { HistoryApiActions } from '../../core/store/history/history-api.actions';
+import { hisotryFeature } from '../../core/store/history/history.reducer';
 
 @Component({
   selector: 'app-chatroom',
@@ -40,12 +40,10 @@ export class ChatroomComponent {
   );
 
   openRoom(roomId: string) {
-    console.log('open room clicked');
     // this.chatService.openGroup(this.group._id);
     this.store.dispatch(
       GroupApiActions.roomLoadedSuccess({
         roomId: roomId,
-        groupId: this.group._id,
       })
     );
     this.store.dispatch(HistoryApiActions.displayHistory({ id: roomId }));

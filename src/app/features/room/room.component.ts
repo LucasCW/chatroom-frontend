@@ -34,7 +34,6 @@ export class RoomComponent {
     this.store.dispatch(
       GroupApiActions.roomLoadedSuccess({
         roomId: this.roomId,
-        groupId: this.groupId,
       })
     );
   }

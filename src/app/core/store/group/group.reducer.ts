@@ -22,10 +22,13 @@ export const groupFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(GroupApiActions.roomLoadedSuccess, (state, action) => {
+      const groupId = state.ids.find((id) =>
+        state.entities[id]?.rooms.some((room) => room._id == action.roomId)
+      ) as string;
       return {
         ...state,
         joinedRoomId: action.roomId,
-        joinedGroupId: action.groupId,
+        joinedGroupId: groupId,
       };
     }),
     on(GroupApiActions.groupsLoadedSuccess, (state, action) => {
@@ -42,7 +45,20 @@ export const groupFeature = createFeature({
       );
     }),
     on(GroupApiActions.privateChannelsLoadedSuccess, (state, action) => {
-      return adapter.addOne({ ...action.group, rooms: action.rooms }, state);
+      const privateGroupId = state.ids.filter((id) => {
+        const group = state.entities[id];
+        return group?.type && group.type == GroupType.private;
+      })[0] as string;
+
+      const privateGroup = {
+        ...state.entities[privateGroupId],
+        rooms: action.rooms,
+      };
+
+      return adapter.updateOne(
+        { id: privateGroupId, changes: privateGroup },
+        state
+      );
     }),
     on(GroupApiActions.reset, (state, _) => {
       const privateGroupId = state.ids.filter((id) => {
@@ -50,11 +66,15 @@ export const groupFeature = createFeature({
         return group?.type && group.type == GroupType.private;
       })[0] as string;
 
-      return adapter.removeOne(privateGroupId, {
-        ...state,
-        joinedGroupId: null,
-        joinedRoomId: null,
-      });
+      const privateGroup = { ...state.entities[privateGroupId], rooms: [] };
+      return adapter.updateOne(
+        { id: privateGroupId, changes: privateGroup },
+        {
+          ...state,
+          joinedGroupId: null,
+          joinedRoomId: null,
+        }
+      );
     })
   ),
   extraSelectors: ({ selectGroupState }) => {
@@ -69,11 +89,11 @@ export const groupFeature = createFeature({
       createSelector(selectGroupByType(GroupType.private), (groups) => {
         const rooms = groups.flatMap((group) => group.rooms);
 
-        const room = rooms.find(
+        return rooms.find(
           (room) =>
-            room.users.map((user) => user._id).sort == [creatorId, userId].sort
+            JSON.stringify(room.users.map((user) => user._id).sort()) ==
+            JSON.stringify([creatorId, userId].sort())
         );
-        return room;
       });
     return {
       ...adapter.getSelectors(selectGroupState),

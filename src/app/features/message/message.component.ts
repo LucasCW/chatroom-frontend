@@ -1,12 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { first } from 'rxjs';
 import { History } from '../../core/data/History';
 import { ChatService } from '../../core/services/chat.service';
-import { Store } from '@ngrx/store';
-import { groupFeature } from '../../core/store/group/group.reducer';
-import { first } from 'rxjs';
 import { GroupApiActions } from '../../core/store/group/group-api.actions';
-import { group } from '@angular/animations';
+import { groupFeature } from '../../core/store/group/group.reducer';
 
 @Component({
   selector: 'app-message',
@@ -42,7 +41,6 @@ export class MessageComponent {
               this.store.dispatch(
                 GroupApiActions.roomLoadedSuccess({
                   roomId: privateChannel._id,
-                  groupId: privateChannel.group._id,
                 })
               );
             })()

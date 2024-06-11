@@ -3,8 +3,8 @@ import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Group } from '../../core/data/Group';
 import { ChatService } from '../../core/services/chat.service';
-import { ChatroomComponent } from '../chatroom/chatroom.component';
 import { groupFeature } from '../../core/store/group/group.reducer';
+import { ChatroomComponent } from '../chatroom/chatroom.component';
 
 @Component({
   selector: 'app-group-menu-item',

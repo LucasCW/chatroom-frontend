@@ -2,8 +2,8 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
-import { ChatService } from '../../core/services/chat.service';
 import { groupFeature } from '../../core/store/group/group.reducer';
+import { ChatService } from '../../core/services/chat.service';
 
 @Component({
   selector: 'app-group',

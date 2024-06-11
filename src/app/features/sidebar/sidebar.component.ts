@@ -6,13 +6,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import { ChatService } from '../../core/services/chat.service';
+import { GroupApiActions } from '../../core/store/group/group-api.actions';
+import { UserApiActions } from '../../core/store/user/user-api.actions';
 import { userFeature } from '../../core/store/user/user.reducer';
 import { LoginComponent } from '../../login/login.component';
 import { GroupMenuComponent } from '../group-menu/group-menu.component';
 import { PrivateChannelsComponent } from '../private-channels/private-channels.component';
-import { UserApiActions } from '../../core/store/user/user-api.actions';
-import { HistoryApiActions } from '../../core/store/history/history-api.actions';
-import { GroupApiActions } from '../../core/store/group/group-api.actions';
 
 @Component({
   selector: 'app-sidebar',
@@ -52,7 +51,6 @@ export class SidebarComponent {
 
   logout() {
     this.store.dispatch(UserApiActions.logoutSuccess());
-    this.store.dispatch(HistoryApiActions.reset());
     this.store.dispatch(GroupApiActions.reset());
   }
 }

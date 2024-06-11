@@ -5,7 +5,7 @@ import { Room } from '../../data/Room';
 export const GroupApiActions = createActionGroup({
   source: 'Group Api Actions',
   events: {
-    roomLoadedSuccess: props<{ roomId: string; groupId: string }>(),
+    roomLoadedSuccess: props<{ roomId: string }>(),
     groupsLoadedSuccess: props<{ groups: Group[] }>(),
     privateChannelCreatedSuccess: props<{ room: Room }>(),
     privateChannelsLoadedSuccess: props<{ group: Group; rooms: Room[] }>(),

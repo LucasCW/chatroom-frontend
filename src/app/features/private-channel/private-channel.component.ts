@@ -1,14 +1,14 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
+import { Group } from '../../core/data/Group';
+import { Room } from '../../core/data/Room';
 import { ChatService } from '../../core/services/chat.service';
-import { HistoryApiActions } from '../../core/store/history/history-api.actions';
 import { GroupApiActions } from '../../core/store/group/group-api.actions';
 import { groupFeature } from '../../core/store/group/group.reducer';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { Store } from '@ngrx/store';
+import { HistoryApiActions } from '../../core/store/history/history-api.actions';
 import { hisotryFeature } from '../../core/store/history/history.reducer';
-import { map } from 'rxjs';
-import { Room } from '../../core/data/Room';
-import { Group } from '../../core/data/Group';
 
 @Component({
   selector: 'app-private-channel',
@@ -47,7 +47,6 @@ export class PrivateChannelComponent {
     this.store.dispatch(
       GroupApiActions.roomLoadedSuccess({
         roomId: channelId,
-        groupId: this.group._id,
       })
     );
     this.store.dispatch(HistoryApiActions.displayHistory({ id: channelId }));

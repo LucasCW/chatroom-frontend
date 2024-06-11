@@ -32,9 +32,12 @@ export const hisotryFeature = createFeature({
     }),
     on(HistoryApiActions.historyAddedSuccess, (state, action) => {
       const updatedHistory = [...state.entities[action.id]!.histories];
+      const loadedHistory = state.loadedHistory;
       updatedHistory.push({
         ...action.history,
-        isRead: action.creatorId == action.history.user._id,
+        isRead:
+          action.creatorId == action.history.user._id ||
+          action.history.room == loadedHistory,
       });
       return adapter.updateOne(
         {
@@ -57,8 +60,11 @@ export const hisotryFeature = createFeature({
         { ...state, loadedHistory: action.id }
       );
     }),
-    on(HistoryApiActions.reset, (state, _) => {
-      return adapter.removeAll({ ...state, loadedHistory: null });
+    on(HistoryApiActions.reset, (state, action) => {
+      return adapter.removeOne(action.group._id, {
+        ...state,
+        loadedHistory: null,
+      });
     })
   ),
   extraSelectors: ({
