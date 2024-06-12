@@ -1,0 +1,23 @@
+1. Rewrite HTML and CSS copied online.
+
+2. Add e2e tests using cypress.
+
+3. Add angular component tests.
+
+4. Adjust the structure of the project.
+
+5. Add authentication.
+
+6. Add feature: user creation
+
+7. Add feature: private chat room with more than 2 users. (Only 2 users supported atm.)
+
+8. Add feature: mention users with `@`
+
+9. Make message display area scrollable. 
+
+10. Add UI for online users
+
+11. Replace the hard coded user profile pic.
+
+12. Add error and exception handling.
