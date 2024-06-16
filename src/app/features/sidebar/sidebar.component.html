@@ -31,11 +31,11 @@
       />
       <!-- username here -->
 
-      <strong>
-        @if(!!(user$ | async)) {
+      <strong
+        >@if(!!(user$ | async)) {
         {{ (user$ | async)?.username }}
-        } @else { No user selected! }
-      </strong>
+        } @else {No user selected!}</strong
+      >
     </a>
     <ul
       class="dropdown-menu dropdown-menu-dark text-small shadow"

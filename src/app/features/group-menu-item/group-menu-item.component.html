@@ -5,9 +5,8 @@
       data-bs-toggle="collapse"
       [attr.data-bs-target]="'#' + group._id"
       aria-expanded="true"
+      >{{ group.name }}</button
     >
-      {{ group.name }}
-    </button>
     <div class="collapse show" [attr.id]="group._id">
       <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
         @for (room of group.rooms; track room._id) {
