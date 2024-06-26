@@ -7,6 +7,7 @@ import { MessageDisplayComponent } from './features/message-display/message-disp
 import { MessageComponent } from './features/message/message.component';
 import { SidebarComponent } from './features/sidebar/sidebar.component';
 import { ChatService } from './core/services/chat.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,20 @@ import { ChatService } from './core/services/chat.service';
 })
 export class AppComponent {
   title = 'chatroom_front';
+
+  titleService = inject(Title);
+
+  constructor() {
+    setTimeout(() => {
+      this.title = 'test title';
+      this.titleService.setTitle('test title');
+      console.log(this.title);
+    }, 3000);
+
+    window.onload = (event) => {
+      console.log('on load fired', this.title);
+    };
+  }
 
   chatService = inject(ChatService);
 
